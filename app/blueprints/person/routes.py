@@ -59,7 +59,9 @@ def person_detail(hash_id):
         .all()
     )
 
-    return render_template('detail.html', person=person, quotes=quotes)
+    tags = [tag for tag in person.tags if tag.category is not None]
+
+    return render_template('detail.html', person=person, quotes=quotes, tags=tags)
 
 
 @person_bp.route('/edit/<hash_id>', methods=['GET', 'POST'])

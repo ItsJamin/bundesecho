@@ -21,6 +21,12 @@ class ReviewStatus(enum.Enum):
     REJECTED = 'REJECTED'
 
 
+class TagCategory(enum.Enum):
+    PARTY = 'PARTY'  # e.g. CDU, SPD, AfD
+    REGION = 'REGION'  # e.g. International, Germany, Bavaria
+    # PERIOD = 'PERIOD'  # e.g. Bundestag 2019-2024
+
+
 # Main Info Models
 
 quote_tag = db.Table(
@@ -35,6 +41,23 @@ quote_tag = db.Table(
         'tag_id',
         db.Integer,
         db.ForeignKey('tag.id', name='fk_quote_tag_tag_id'),
+        primary_key=True,
+    ),
+    db.Column('order', db.Integer, default=0),
+)
+
+person_tag = db.Table(
+    'person_tag',
+    db.Column(
+        'person_id',
+        db.Integer,
+        db.ForeignKey('person.id', name='fk_person_tag_person_id'),
+        primary_key=True,
+    ),
+    db.Column(
+        'tag_id',
+        db.Integer,
+        db.ForeignKey('tag.id', name='fk_person_tag_tag_id'),
         primary_key=True,
     ),
     db.Column('order', db.Integer, default=0),
@@ -70,6 +93,13 @@ class Person(db.Model):
     submitted_by = db.relationship('User', foreign_keys=[submitted_by_id])
     reviewed_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reviewed_by = db.relationship('User', foreign_keys=[reviewed_by_id])
+
+    tags = db.relationship(
+        'Tag',
+        secondary=person_tag,
+        backref=db.backref('persons', lazy='dynamic'),
+        order_by=person_tag.c.order,
+    )
 
 
 class MetaQuote(db.Model):
@@ -120,6 +150,9 @@ class Quote(db.Model):
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
+    category = db.Column(db.Enum(TagCategory), nullable=True)
+    custom_info = db.Column(db.Text, nullable=True)
+    # e.g. color of a party, flag of a country
 
 
 # User Models

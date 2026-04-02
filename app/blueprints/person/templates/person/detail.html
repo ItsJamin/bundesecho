@@ -18,7 +18,6 @@
       {% endif %}
     {% endif %}
 
-
     <div>
       <h1 class="mb-1">{{ person.name }}</h1>
 
@@ -26,7 +25,16 @@
         <p class="mb-2">{{ person.description }}</p>
       {% endif %}
     </div>
+
+    {% if tags %}
+      <div class="quote-tags">
+        {% for tag in tags %}
+          <a href="{{ url_for('quote.search', mode='advanced', tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+        {% endfor %}
+      </div>
+  {% endif %}
   </div>
+
 
   <div class="text-center text-md-end">
     <a class="btn btn-outline-light btn-bg"

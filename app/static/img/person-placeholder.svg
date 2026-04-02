@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Full background -->
+  <rect width="200" height="200" fill="#1b263b"></rect>
+
+  <!-- Head -->
+  <circle cx="100" cy="60" r="30" fill="#cccccc"></circle>
+
+  <!-- Collar -->
+  <polygon points="70,110 100,135 130,110" fill="#ffffff"></polygon>
+
+  <!-- Suit jacket -->
+  <path d="M60,120 Q100,190 140,120 L130,110 Q100,150 70,110 Z" fill="#2e3b4e"></path>
+
+  <!-- Tie -->
+  <polygon points="95,135 105,135 100,170" fill="#c1121f"></polygon>
+</svg>

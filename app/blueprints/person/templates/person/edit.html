@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ person.name }} bearbeiten - BundesEcho{% endblock %}
+{% block content %}
+<h1>{{ person.name }} bearbeiten</h1>
+<form method="POST">
+  <label for="name">
+    Name
+    <i class="bi bi-info-circle-fill ms-1"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Keine Dr. Titel o.ä., Zweitnamen optional">
+    </i>
+  </label><br>
+  <input type="text" name="name" class="form-control" value="{{ person.name }}" autocomplete="off"><br><br>
+
+  <label for="description">
+    Beschreibung
+    <i class="bi bi-info-circle-fill ms-1"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Partei, besondere Funktion">
+    </i>
+  </label><br>
+  <textarea name="description" class="form-control">{% if person.description %}{{person.description}}{% endif %}</textarea><br><br>
+
+  <label for="image_url">
+    Bild-URL
+    <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Vorzugsweise Bilder von Wikipedia oder der offiziellen Bundestagsseite.">
+    </i>
+  </label><br>
+  <input type="text" name="image_url" class="form-control" value="{% if person.description %}{{person.image_url}}{% endif %}" autocomplete="off">
+  <br><br>
+
+  <label for="image_src">
+    Bildquelle / Copyright
+    <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Quelle des Bildes bzw. Copyright-Angabe, z.B. 'Wikimedia Commons, Foto von Max Mustermann' oder 'Bundestagsseite'.">
+    </i>
+  </label><br>
+  <input type="text" name="image_src" class="form-control" 
+        value="{{ person.image_src or '' }}" autocomplete="off">
+  <br><br>
+
+
+  <button class="btn btn-outline-light mt-2 btn-bg" type="submit">Einreichen</button>
+</form>
+<script src="{{ url_for('static', filename='js/tooltip.js') }}"></script>
+
+{% endblock %}

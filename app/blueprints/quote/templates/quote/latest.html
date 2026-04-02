@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Kürzlich hinzugefügt - BundesEcho{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="mb-4">Kürzlich Hinzugefügt</h2>
+
+  {% if quotes %}
+    {% for quote in quotes %}
+      {% include "quote_box.html" %}
+    {% endfor %}
+  {% else %}
+    <p>No quotes found.</p>
+  {% endif %}
+</div>
+{% endblock %}

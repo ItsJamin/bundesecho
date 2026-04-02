@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Politische Akteur:innen - BundesEcho{% endblock %}
+
+{% block content %}
+<div class="person-list">
+  <h1>Politische Akteur:innen</h1>
+
+  <!-- Search Bar -->
+  <form id="search-form" novalidate>
+    <div class="form-group">
+      <input type="text" id="person-search" name="person_search" class="form-control" autocomplete="off"
+             placeholder="Suche nach einer Person oder einer Partei">
+    </div>
+  </form>
+
+  <!-- Person Groups -->
+  <div id="person-groups">
+    {% for letter, persons in grouped_persons.items() %}
+      <div class="person-group" data-group="{{ letter }}">
+        <h2 class="person-letter">{{ letter }}</h2>
+        <div class="person-grid">
+          {% for person in persons %}
+            <div class="person-box" data-name="{{ person.name | lower }}"
+            data-description="{{ person.description | default('', true) | lower }}">
+              {% include "person_box.html" %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Filtering Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const input = document.getElementById("person-search");
+  const groups = document.querySelectorAll(".person-group");
+
+  input.addEventListener("input", function () {
+    const query = input.value.trim().toLowerCase();
+
+    groups.forEach(group => {
+      const persons = group.querySelectorAll(".person-box");
+      let anyVisible = false;
+
+      persons.forEach(box => {
+        const name = box.dataset.name || "";
+        const description = box.dataset.description || "";
+        const match = name.includes(query) || description.includes(query);
+
+        box.style.display = match ? "" : "none";
+        if (match) anyVisible = true;
+      });
+
+      group.style.display = anyVisible ? "" : "none";
+    });
+  });
+});
+</script>
+{% endblock %}

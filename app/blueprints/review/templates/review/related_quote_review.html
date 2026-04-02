@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Related Quote Review{% endblock %}
+{% block content %}
+<h2>Review dazugehörige Zitate #{{ related.id }}</h2>
+
+<form method="POST">
+  <div style="display:flex; gap:2rem;">
+
+    <div style="flex:1; border:1px solid #ccc; padding:1rem;">
+      <h3>Zitat A</h3>
+      {% if meta_quote_a %}
+        {% set quote = meta_quote_a %}
+        {% include "quote_box.html" %}
+      {% else %}
+        <p>No approved quote found.</p>
+      {% endif %}
+    </div>
+
+    <div style="flex:1; border:1px solid #ccc; padding:1rem;">
+      <h3>Zitat B</h3>
+      {% if meta_quote_b %}
+        {% set quote = meta_quote_b %}
+        {% include "quote_box.html" %}
+      {% else %}
+        <p>No approved quote found.</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="mt-3">
+    <button name="action" value="approve" class="btn btn-success">Annehmen</button>
+    <button name="action" value="reject" class="btn btn-danger">Ablehnen</button>
+  </div>
+</form>
+
+<hr>
+<p><strong>Submitted by:</strong> {{ related.submitted_by.username if related.submitted_by else "unknown" }}</p>
+{% endblock %}

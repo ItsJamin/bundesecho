@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Zitat Einreichen - BundesEcho{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  {% if quoteid %}
+    <h2>Bearbeite dieses Zitat</h2>
+  {% else %}
+    <h2>Reiche ein Zitat ein</h2>
+  {% endif %}
+
+  {% if errors %}
+    <div class="alert alert-danger">
+      <ul>
+      {% for error in errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post" action="{{ url_for('quote.submit_quote') }}" novalidate>
+    <input type="hidden" name="quoteid" value="{{ quoteid }}">
+
+    <div class="mb-3">
+      <label for="text" class="form-label">
+        Aussage
+        <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Keine Anführungszeichen. Änderungen oder Weglassungen mit eckigen Klammern kennzeichnen.">
+        </i>
+      </label>
+      <textarea id="text" name="text" rows="4" class="form-control" placeholder="Das hier ist nur ein Beispiel für eine Aussage. [...] Und da bin ich mir sicher.">{{ form_data.text if form_data else '' }}</textarea>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="person">
+        Person
+        <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Keine Titel wie 'Dr. Max Mustermann'. Zweitnamen sind erlaubt, falls die Person aber vorgeschlagen wird, bitte die Schreibweise verwenden.">
+        </i>
+      </label>
+      <input type="text" id="person" name="person" class="form-control" placeholder="Max Mustermann"
+      value="{{ form_data.person if form_data else '' }}" autocomplete="off">
+      <ul id="person-suggestions" class="suggestions-list"></ul>
+    </div>
+
+    <div class="mb-3">
+      <label for="context" class="form-label">
+        Kontext (optional)
+        <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Wo und in welcher Situation wurde es gesagt? Gibt es Begriffe die es zu erklären gilt?">
+        </i>
+      </label>
+      <textarea class="form-control" id="context" name="context" 
+        placeholder="bei BeispielZeitung im Interview: Über dies und jenes" rows="3">{{ form_data.context if form_data else '' }}</textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="source" class="form-label">
+        Quelle
+        <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Gib einen Link oder eine Quelle an, von Artikeln oder Videos, die die Aussagen belegen. Am Besten sind Links, die mit archive.org gesichert worden sind.">
+        </i>
+      </label>
+      <input id="source" name="source" type="text" class="form-control" value="{{ form_data.source if form_data else '' }}" 
+      placeholder="https://www.beispiel-zeitung.de/diesundjenes" autocomplete="off">
+    </div>
+
+    <div class="form-group">
+      <label for="tags-input">
+        Tags
+        <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Tag mit Enter hinzufügen oder aus Liste auswählen.">
+        </i>
+      </label>
+      <input type="text" id="tags-input" class="form-control" placeholder="" autocomplete="off">
+      <ul id="tag-suggestions" class="suggestions-list"></ul>
+      <div id="selected-tags" class="selected-tags"></div>
+      <input type="hidden" name="tags" id="tags-hidden" value="{{ form_data.tags if form_data else '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="date_said" class="form-label">Datum der Aussage</label>
+      <input type="date" class="form-control" id="date_said" name="date_said" value="{{ form_data.date_said if form_data else '' }}">
+    </div>
+
+    <button type="submit" class="btn btn-bg btn-outline-light">Einreichen</button>
+  </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/submit.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tooltip.js') }}"></script>
+{% endblock %}

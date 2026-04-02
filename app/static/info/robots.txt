@@ -1,0 +1,33 @@
+User-agent: GPTBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: facebookexternalhit
+Disallow: /
+
+User-agent: MetaBot
+Disallow: /
+
+User-agent: *
+
+Disallow: /api/
+Disallow: /review/
+Disallow: /admin/
+Disallow: /ajmin/
+Disallow: /secret-info
+Disallow: /login
+Disallow: /logout
+Disallow: /register
+
+Allow: /p
+Allow: /q
+
+Sitemap: https://bundesecho.de/sitemap.xml

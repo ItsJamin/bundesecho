@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% set quote_count = quotes | length %}
+{% block title %}{{ person.name }} - BundesEcho{% endblock %}
+{% block content %}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+
+  <div class="d-flex flex-column flex-md-row align-items-center gap-3 text-center text-md-start">
+    {% if person.image_url %}
+      {% if person.image_src %}
+        <a href="{{ person.image_src }}" target="_blank" rel="noopener noreferrer">
+          <img src="{{ person.image_url }}" alt="{{ person.name }}"
+              class="quote-person-image-big mb-2 mb-md-0">
+        </a>
+      {% else %}
+        <img src="{{ person.image_url }}" alt="{{ person.name }}"
+            class="quote-person-image-big mb-2 mb-md-0">
+      {% endif %}
+    {% endif %}
+
+
+    <div>
+      <h1 class="mb-1">{{ person.name }}</h1>
+
+      {% if person.description %}
+        <p class="mb-2">{{ person.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="text-center text-md-end">
+    <a class="btn btn-outline-light btn-bg"
+       href="{{ url_for('person.edit_person', hash_id=person_hashs.encode(person.meta_person_id)) }}">
+      Bearbeiten
+    </a>
+  </div>
+</div>
+
+<h2>{{ quote_count }} {{ "Zitat" if quote_count == 1 else "Zitate" }}</h2>
+{% for quote in quotes %}
+  {% include "quote_box.html" %}
+{% else %}
+  <p>Keine Zitate vorhanden.</p>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Person Review{% endblock %}
+{% block content %}
+<h2>Person prüfen: {{ person.name }}</h2>
+
+<form method="POST">
+  <label>Name:</label>
+  <input type="text" name="name" class="form-control" value="{{ person.name }}">
+
+  <label>Beschreibung:</label>
+  <textarea name="description" class="form-control">{{ person.description }}</textarea>
+
+  <label>Bild-URL:</label>
+  <input type="text" name="image_url" class="form-control" value="{{ person.image_url }}" autocomplete="off">
+
+  <label>Bildquelle:</label>
+  <input type="text" name="image_src" class="form-control" value="{{ person.image_src or '' }}" autocomplete="off">
+
+
+  <div class="mt-3">
+    <button name="action" value="edit" class="btn btn-warning">Änderung speichern</button>
+    <button name="action" value="approve" class="btn btn-success">Freigeben</button>
+    <button name="action" value="reject" class="btn btn-danger">Ablehnen</button>
+  </div>
+</form>
+
+<hr>
+<p><strong>Eingereicht von:</strong> {{ person.submitted_by.username }}</p>
+
+<h2>Vorschau der eingereichten Daten</h2>
+{% include "person_box.html" %}
+{% endblock %}

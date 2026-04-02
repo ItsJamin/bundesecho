@@ -1,0 +1,31 @@
+{
+  "name": "BundesEcho",
+  "short_name": "BundesEcho",
+  "start_url": "https://www.bundesecho.de/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d1b2a",
+  "theme_color": "#1b263b",
+  "categories": [
+    "government",
+    "education",
+    "news"
+  ],
+  "description": "Öffentliche Aussagen politischer Akteure - für mehr Transparenz und politische Bildung.",
+  "lang": "de-DE",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/static/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "id": "bundesecho",
+  "orientation": "portrait-primary"
+}

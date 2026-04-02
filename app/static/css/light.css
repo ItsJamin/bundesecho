@@ -1,0 +1,226 @@
+/* Light theme overrides */
+
+body {
+    background-color: #ffffff; /* white background */
+    color: #1a1a1a; /* dark text */
+}
+
+.navbar {
+    background-color: #f8f9fa !important; /* light gray navbar */
+    padding: 1rem;
+}
+
+.navbar-brand, .nav-link {
+    color: #1a1a1a !important;
+}
+
+.nav-link:hover {
+    color: #000000 !important;
+}
+
+.alert {
+    opacity: 0.95;
+}
+
+footer {
+    border-top: 1px solid #cccccc;
+}
+
+a {
+    color: #1a1a1a;
+}
+
+a:hover {
+    color: #000000;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Person section */
+.person-letter {
+    color: #1a1a1a;
+    border-bottom: 1px solid #cccccc;
+}
+
+.person-card {
+    background-color: #f8f9fa;
+    border: 1px solid #cccccc;
+    color: #1a1a1a;
+}
+
+.person-info a {
+    color: #1a1a1a;
+}
+
+.person-info a:hover {
+    color: #000000;
+}
+
+.person-description {
+    color: #495057;
+}
+
+/* Quote boxes */
+.quote-box {
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+}
+
+.quote-action-btns a,
+.quote-action-btns button {
+    border: 1px solid #cccccc;
+    color: #1a1a1a;
+    background-color: #e9ecef;
+}
+
+.quote-action-btns a:hover,
+.quote-action-btns button:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.quote-footer {
+    color: #1a1a1a;
+}
+
+.quote-source {
+    color: #6c757d;
+}
+
+.quote-source a {
+    color: #6c757d;
+}
+
+.quote-source a:hover {
+    color: #000000;
+}
+
+.quote-tags .quote-tag {
+    background-color: #dee2e6;
+    color: #1a1a1a;
+}
+
+.quote-date {
+    color: #6c757d;
+}
+
+.quote-context {
+    color: #6c757d;
+}
+
+.quote-person-image, .quote-person-image-big {
+    border: 1px solid #cccccc;
+}
+
+/* Tables */
+.table {
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th,
+.table td {
+    border: 1px solid #cccccc;
+}
+
+.table th {
+    background-color: #e9ecef;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f1f3f5;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #ffffff;
+}
+
+.table a {
+    color: #0d6efd;
+}
+
+.table a:hover {
+    color: #0a58ca;
+}
+
+.btn-bg {
+    background-color: #e0e0e0;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+}
+
+.table .btn {
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+}
+
+.table .btn:hover {
+    background-color: #e2e6ea;
+}
+
+.fixed-alert-item {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Responsive table wrapper */
+.table-responsive {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+}
+
+/* Form controls (search inputs etc.) */
+.form-control {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+}
+
+.form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 5px #ced4da;
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+.suggestions-list {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    color: #1a1a1a;
+}
+
+.suggestions-list li:hover {
+    background-color: #e9ecef;
+}
+
+.selected-tag {
+    background-color: #dee2e6;
+    color: #1a1a1a;
+}
+
+.selected-tag-negative {
+    background-color: #f5c6cb;
+    color: #721c24;
+}
+
+.selected-tag .remove-tag {
+    color: #1a1a1a;
+}
+
+.selected-tag .remove-tag:hover {
+    color: #dc3545;
+}
+
+/* Theme toggle button - light theme */
+#theme-toggle-btn:hover {
+    background-color: #e9ecef;
+}

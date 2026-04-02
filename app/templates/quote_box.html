@@ -1,0 +1,98 @@
+{% set person = quote.meta_person.get_latest() %}
+{% set current_id = request.view_args.get('hash_id') %}
+{% set is_current_quote = (request.endpoint == 'quote.quote_detail' and current_id == quote_hashs.encode(quote.meta_quote_id)) %}
+
+<div class="quote-box mb-4">
+  {% if not embed_mode %}
+  <div class="quote-action-btns">
+    {% if is_current_quote %}
+      <!-- Edit button -->
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('quote.edit_quote', hash_id=quote_hashs.encode(quote.meta_quote_id)) }}" 
+         class="quote-edit-btn btn-bg">
+        <i class="bi bi-pencil"></i>
+      </a>
+      <!-- Embed button -->
+      <button type="button" class="quote-embed-btn btn-bg"
+              data-embed-url="{{ url_for('quote.quote_embed', hash_id=quote_hashs.encode(quote.meta_quote_id), _external=True) }}">
+        <i class="bi bi-code-slash"></i>
+      </button>
+      {% endif %}
+      <!-- Share as image button -->
+      <button type="button" class="quote-image-btn btn-bg" onclick="downloadQuoteImage({{ quote.meta_quote_id }})">
+        <i class="bi bi-camera"></i>
+      </button>
+    {% else %}
+      <!-- View button -->
+      <a href="{{ url_for('quote.quote_detail', hash_id=quote_hashs.encode(quote.meta_quote_id)) }}" 
+         class="quote-view-btn btn-bg">
+        <i class="bi bi-eye"></i>
+      </a>
+    {% endif %}
+    <!-- Share button -->
+    <button type="button" class="quote-share-btn btn-bg"
+            data-quote-text="{{ quote.text|e }}"
+            data-person-name="{{ person.name if person else ''|e }}"
+            data-quote-link="{{ url_for('quote.quote_detail', hash_id=quote_hashs.encode(quote.meta_quote_id), _external=True) }}">
+    <i class="bi bi-share"></i>
+  </button>
+  </div>
+  {% endif %}
+
+  <blockquote>
+    “{{ quote.text }}”
+  </blockquote>
+
+  {% if quote.context %}
+    <div class="quote-context">
+      {{ quote.context }}
+    </div>
+  {% endif %}
+
+  <div class="quote-footer d-flex align-items-center mt-3">
+    {% if person %}
+      <img
+        src="{{ person.image_url if person.image_url else url_for('static', filename='img/person-placeholder.svg') }}"
+        alt="{{ person.name }}"
+        class="quote-person-image me-2"
+      >
+      <div class="person-info">
+        <a class="quote-person" href="{{ url_for('person.person_detail', hash_id=person_hashs.encode(person.meta_person_id)) }}" {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ person.name }}</a>
+        <br>
+        {% if person.description %}
+          <span class="quote-context">({{ person.description }})</span>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  {% if quote.source %}
+      <div class="quote-source">
+        {% if quote.source.startswith("http") %}
+          <a href="{{ quote.source }}" target="_blank" rel="noopener noreferrer">{{ quote.source }}</a>
+        {% else %}
+          {{ quote.source }}
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% if quote.tags %}
+    <div class="quote-tags">
+      {% for tag in quote.tags %}
+        <a href="{{ url_for('quote.search', mode='advanced', tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if not embed_mode %}
+    {% if quote.date_said %}
+      <div class="quote-date">{{ quote.date_said.strftime('%d.%m.%Y') }}</div>
+    {% endif %}
+  {% else %}
+    <div class="quote-date">
+    {% if quote.date_said %}
+      {{ quote.date_said.strftime('%d.%m.%Y') }},
+    {% endif %}
+    mehr Zitate auf <a href="https://bundesecho.de" class="text-muted" target="_blank" rel="noopener noreferrer">bundesecho.de</a>
+    </div>
+  {% endif %}
+</div>

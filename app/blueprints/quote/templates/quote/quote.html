@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Aussage von {{ person.name }} - BundesEcho{% endblock %}
+{% block content %}
+
+<div class="no-link">
+{% include "quote_box.html" %}
+</div>
+
+<br>
+{% if related_quotes %}
+  <h2>Dazugehörige Zitate</h2>
+  <div>
+    {% for quote in related_quotes %}
+      <div class="p-4 pb-0 pt-0">
+        {% set quote = quote %}
+        {% include "quote_box.html" %}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<br>
+<h2>Dazugehöriges Zitat vorschlagen</h2>
+<form id="relatedForm" method="post" action="{{ url_for('quote.suggest_related', hash_id=quote_hashs.encode(quote.meta_quote_id)) }}">
+  <div class="mb-3">
+    <label for="relatedLink" class="form-label">Dazugehörige Zitate werden bei einem Zitat mitangezeigt. Dazugehörige Zitate können z.B. Reaktionen auf die Aussage sein oder andere Aussagen, die im gleichen Gespräch getroffen worden sind. Schlage ein Zitat vor indem du den Link zu dem Zitat hier einfügst.</label>
+    <input type="url" class="form-control" id="relatedLink" name="related_link" required placeholder="https://bundesecho.de/q/view/a1B2c3" autocomplete="off">
+  </div>
+  <button type="submit" class="btn btn-outline-light mt-2 btn-bg mb-4">Vorschlagen</button>
+</form>
+
+{% if person %}
+  <div style="position: absolute; top: -9999px; left: -9999px;">
+    {% include "quote_image.html" %}
+  </div>
+{% endif %}
+
+<script>
+function downloadQuoteImage(quoteId) {
+  const node = document.getElementById("quote01"); // adjust if IDs vary
+
+  // Create notification
+  const container = document.body;
+  const alert = document.createElement("div");
+  alert.className = "alert alert-success alert-dismissible fade show fixed-alert-item";
+  alert.setAttribute("role", "alert");
+  alert.innerText = "Wird generiert …";
+  container.appendChild(alert);
+
+  htmlToImage.toJpeg(node, { quality: 1, backgroundColor: '#0d1b2a', pixelRatio: 3 })
+    .then(function (dataUrl) {
+      const link = document.createElement('a');
+      link.download = 'zitat_' + document.getElementsByClassName("quote-person")[0].textContent + "_" + quoteId + '.jpg';
+      link.href = dataUrl;
+      link.click();
+
+      // Hide notification after short delay
+      setTimeout(() => {
+        alert.classList.remove("show");
+        setTimeout(() => alert.remove(), 300);
+      }, 1000);
+    })
+    .catch(function (error) {
+      console.error('Bildgenerierung fehlgeschlagen:', error);
+
+      // Update notification to error
+      alert.classList.remove("alert-success");
+      alert.classList.add("alert-danger");
+      alert.innerText = "Fehler beim Generieren des Bildes";
+
+      setTimeout(() => {
+        alert.classList.remove("show");
+        setTimeout(() => alert.remove(), 300);
+      }, 3000);
+    });
+}
+</script>
+
+{% endblock %}

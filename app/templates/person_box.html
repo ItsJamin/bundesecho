@@ -1,0 +1,23 @@
+<a href="{{ url_for('person.person_detail', hash_id=person_hashs.encode(person.meta_person_id)) }}" class="quote-link-wrapper">
+    <div class="person-card">
+        <div class="person-image-wrapper">
+        {% if person.image_url %}
+            <img
+            src="{{ url_for('static', filename='img/person-placeholder.svg') }}"
+            data-src="{{ person.image_url }}"
+            alt="{{ person.name }}"
+            class="lazy-image"
+            />
+        {% else %}
+            <img src="{{ url_for('static', filename='img/person-placeholder.svg') }}" alt="Platzhalter">
+        {% endif %}
+        </div>
+        <div class="person-info">
+        <span>{{ person.name }}</span>
+        {% if person.description %}
+            <div class="person-description">{{ person.description }}</div>
+        {% endif %}
+        </div>
+    </div>
+</a>
+    

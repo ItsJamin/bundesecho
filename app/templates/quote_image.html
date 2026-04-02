@@ -1,0 +1,50 @@
+{% set person = quote.meta_person.get_latest() %}
+{% if person %}
+  <div class="quote-box instagram-format mb-1" id="quote01">
+    <div class="fit-text-wrapper">
+      <blockquote class="fit-text">
+        “{{ quote.text }}”
+      </blockquote>
+      {% if quote.context %}
+        <div class="quote-context fit-text mb-1">
+          {{ quote.context }}
+        </div>
+      {% endif %}
+  </div>
+
+    <div class="quote-info">
+    <div class="quote-footer d-flex align-items-center">
+      <img
+        src="{{ person.image_url if person.image_url else url_for('static', filename='img/person-placeholder.svg') }}"
+        alt="{{ person.name }}"
+        class="quote-person-image-big me-2"
+      >
+      <div class="person-info">
+        <a class="quote-person" href="{{ url_for('person.person_detail', hash_id=person_hashs.encode(person.meta_person_id)) }}">{{ person.name }}</a>
+        {% if person.description %}
+          <span class="quote-context">({{ person.description }})</span>
+        {% endif %}
+        {% if quote.source %}
+      <div class="quote-source">
+        {% if quote.source.startswith("http") %}
+            <a href="{{ quote.source }}" target="_blank" rel="noopener noreferrer">{{ quote.source }}</a>
+          {% else %}
+            {{ quote.source }}
+          {% endif %}
+        </div>
+      {% endif %}
+      </div>
+    </div>
+
+    
+      <div class="quote-date mb-3"> 
+        {% if quote.date_said %}
+          <span>{{ quote.date_said.strftime('%d.%m.%Y') }}, </span>
+        {% endif %}
+          mehr Zitate auf bundesecho.de
+      </div>
+    </div>
+  </div>
+
+<script src="{{ url_for('static', filename='js/fittext.js') }}"></script>
+{% endif %}

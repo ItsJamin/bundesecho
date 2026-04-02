@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Quote Review{% endblock %}
+{% block content %}
+<h2>Zitat prüfen</h2>
+
+<form method="POST">
+  <div class="mb-3">
+    <label class="form-label">Zitattext</label>
+    <textarea name="text" class="form-control" rows="4">{{ quote.text }}</textarea>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Kontext</label>
+    <textarea name="context" class="form-control" rows="2">{{ quote.context or '' }}</textarea>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Quelle</label>
+    <input type="text" name="source" class="form-control" value="{{ quote.source or '' }}">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Person</label>
+    <label type="text" id="person" name="person" class="form-control text-primary" disabled>
+      {{ quote.meta_person.get_latest().name if quote.meta_person.get_latest() else 'Keine zugelassene Version der Person gefunden!' }}
+    </label>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Gesagt am</label>
+    <input type="date" name="date_said" class="form-control" value="{{ quote.date_said.strftime('%Y-%m-%d') if quote.date_said }}">
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="tags-input">Tags</label>
+    <input type="text" id="tags-input" class="form-control" placeholder="">
+    <ul id="tag-suggestions" class="suggestions-list"></ul>
+    <div id="selected-tags" class="selected-tags"></div>
+    <input type="hidden" name="tags" id="tags-hidden" value="{{ quote.tags | map(attribute='name') | join(',') }}">
+
+  </div>
+
+  <div class="mt-4">
+    <button name="action" value="edit" class="btn btn-warning">Änderung speichern</button>
+    <button name="action" value="approve" class="btn btn-success">Freigeben</button>
+    <button name="action" value="reject" class="btn btn-danger">Ablehnen</button>
+    <a href="{{ url_for('review.index') }}" class="btn btn-secondary">Zurück</a>
+  </div>
+</form>
+
+<hr>
+<p><strong>Eingereicht von:</strong> {{ quote.submitted_by.username }}</p>
+
+<h2>Vorschau der eingereichten Daten</h2>
+{% include "quote_box.html" %}
+
+<script src="{{ url_for('static', filename='js/submit.js') }}"></script>
+
+{% endblock %}

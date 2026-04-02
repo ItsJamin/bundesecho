@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Zitat-Suche - BundesEcho{% endblock %}
+
+{% block content %}
+<h2>Suche Zitate</h2>
+
+{% if mode == 'simple' %}
+  <!-- SIMPLE SEARCH -->
+  <form method="GET" action="{{ url_for('quote.search') }}" id="simple-search-form" novalidate>
+    <input type="hidden" name="mode" value="simple">
+    <div class="form-group">
+      <input type="text" id="simple-query" name="q" class="form-control" 
+             placeholder="Suche nach Aussagen, Personen oder Themen" 
+             value="{{ text_query or '' }}"
+             autocomplete="off">
+    </div>
+
+    <!-- Button row -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button type="submit" class="btn btn-bg btn-outline-light">Suchen</button>
+      <a href="{{ url_for('quote.search', mode='advanced') }}" class="btn btn-link text-decoration-none text-muted">Erweiterte Suche</a>
+    </div>
+  </form>
+
+{% else %}
+  <!-- ADVANCED SEARCH -->
+  <form method="GET" action="{{ url_for('quote.search') }}" id="search-form" novalidate onsubmit="removeEmptyFields(event)">
+    <input type="hidden" name="mode" value="advanced">
+
+    <!-- Text Query -->
+    <div class="form-group">
+      <label for="text-query">Text</label>
+      <input type="text" id="text-query" name="text_query" class="form-control" autocomplete="off"
+             placeholder="Wort oder Satzteil im Zitat" value="{{ text_query or '' }}">
+    </div>
+
+    <!-- Person -->
+    <div class="form-group">
+      <label for="person-input">Person</label>
+      <input type="text" id="person-input" name="person_name" placeholder="Wer hat es gesagt?" 
+             value="{{ request.args.get('person_name', '') }}" class="form-control" autocomplete="off">
+      <ul id="person-suggestions" class="suggestions-list"></ul>
+      <input type="hidden" name="meta_person" id="person-id" value="{{ selected_meta_person_id or '' }}">
+    </div>
+
+    <!-- Tags -->
+    <div class="form-group">
+      <label for="tag-input">Tags</label>
+      <input type="text" id="tag-input" autocomplete="off" placeholder="Themen" class="form-control">
+      <ul id="tag-suggestions" class="suggestions-list"></ul>
+      <div id="selected-tags" class="selected-tags">
+        {% for tag in selected_tags %}
+          <div class="selected-tag{% if tag.negative %} selected-tag-negative{% endif %}" 
+               data-id="{{ tag.id }}" data-negative="{{ 'true' if tag.negative else 'false' }}">
+            {{ tag.name }} <span class="remove-tag">×</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Date Range -->
+    <div class="form-group date-range-row">
+      <div class="date-field">
+        <label for="date-from">Von</label>
+        <input type="date" id="date-from" name="date_from" class="form-control"
+               value="{{ date_from or '' }}">
+      </div>
+      <div class="date-field">
+        <label for="date-to">Bis</label>
+        <input type="date" id="date-to" name="date_to" class="form-control"
+               value="{{ date_to or '' }}">
+      </div>
+    </div>
+
+    <!-- Sorting -->
+    <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+      <label for="sort-by" class="mb-0">Sortieren nach:</label>
+      <select name="sort_by" id="sort-by" class="form-control form-control-sm" style="width:auto;">
+        <option value="date_said" {% if request.args.get('sort_by') == 'date_said' %}selected{% endif %}>Datum</option>
+        <option value="author_name" {% if request.args.get('sort_by') == 'author_name' %}selected{% endif %}>Name der Person</option>
+      </select>
+      <select name="sort_order" id="sort-order" class="form-control form-control-sm" style="width:auto;">
+        <option value="desc" {% if request.args.get('sort_order') == 'desc' %}selected{% endif %}>↓ Absteigend</option>
+        <option value="asc" {% if request.args.get('sort_order') == 'asc' %}selected{% endif %}>↑ Aufsteigend</option>
+      </select>
+    </div>
+
+    <!-- Button row -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button type="submit" class="btn btn-bg btn-outline-light">Suchen</button>
+      <a href="{{ url_for('quote.search', mode='simple') }}" class="btn btn-link text-decoration-none text-muted">Einfache Suche</a>
+    </div>
+  </form>
+{% endif %}
+
+<!-- Results -->
+<div id="quotes-container" class="container my-4">
+  {% for quote in quotes %}
+    {% include 'quote_box.html' %}
+  {% else %}
+    <p>Keine passenden Zitate gefunden. <a href="{{url_for('quote.submit_request')}}">Möchtest du ein Zitat einreichen?</a></p>
+  {% endfor %}
+</div>
+
+<!-- Load More Button -->
+{% if has_next %}
+  <div class="text-center mb-4">
+    <button id="load-more" class="btn btn-outline-light btn-bg"><i class="bi bi-arrow-down"></i> Mehr laden</button>
+  </div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+
+<script>
+let currentPage = {{ page }};
+const loadMoreBtn = document.getElementById("load-more");
+
+loadMoreBtn?.addEventListener("click", async () => {
+    currentPage += 1;
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", currentPage);
+    params.set("ajax", 1);
+
+    const res = await fetch(`${window.location.pathname}?${params.toString()}`);
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const container = document.getElementById("quotes-container");
+
+    // create a temporary div to parse HTML
+    const temp = document.createElement("div");
+    temp.innerHTML = data.html;
+
+    Array.from(temp.children).forEach(child => container.appendChild(child));
+
+    // hide button if no more results
+    if (!data.has_next) {
+        loadMoreBtn.style.display = "none";
+    }
+});
+</script>
+{% endblock %}

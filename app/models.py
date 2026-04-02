@@ -60,6 +60,7 @@ class Person(db.Model):
     description = db.Column(db.Text, nullable=True)
     image_url = db.Column(db.String(300), nullable=True)
     image_src = db.Column(db.String(300), nullable=True)
+    image_copyright = db.Column(db.String(300), nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     meta_person_id = db.Column(
         db.Integer, db.ForeignKey('meta_person.id'), nullable=False

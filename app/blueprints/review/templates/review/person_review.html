@@ -16,6 +16,15 @@
   <label>Bildquelle:</label>
   <input type="text" name="image_src" class="form-control" value="{{ person.image_src or '' }}" autocomplete="off">
 
+  <div class="form-group mb-3">
+    <label for="tags-input">Tags</label>
+    <input type="text" id="tags-input" class="form-control" placeholder="">
+    <ul id="tag-suggestions" class="suggestions-list"></ul>
+    <div id="selected-tags" class="selected-tags"></div>
+    <input type="hidden" name="tags" id="tags-hidden" value="{{ person.tags | map(attribute='name') | join(',') }}">
+
+  </div>
+
 
   <div class="mt-3">
     <button name="action" value="edit" class="btn btn-warning">Änderung speichern</button>
@@ -29,4 +38,6 @@
 
 <h2>Vorschau der eingereichten Daten</h2>
 {% include "person_box.html" %}
+
+<script src="{{ url_for('static', filename='js/tag-autocomplete.js') }}"></script>
 {% endblock %}

@@ -9,8 +9,10 @@ from app.models import (
     MetaPerson,
     Person,
     ReviewStatus,
+    Tag,
     get_latest_approved_quotes_query,
     person_hashs,
+    person_tag,
 )
 
 
@@ -73,6 +75,8 @@ def edit_person(hash_id):
 
     if request.method == 'POST':
         # create new version instead of editing existing one, to preserve history and allow review
+        tags_raw = request.form.get('tags', '').strip()
+
         person = Person(
             meta_person_id=meta_person_id,
             name=request.form.get('name'),
@@ -87,7 +91,27 @@ def edit_person(hash_id):
             submitted_by_id=current_user.id,
         )
 
+        tag_names = [t.strip() for t in tags_raw.split(',') if t.strip()]
+        tags = []
+        for name in tag_names:
+            tag = Tag.query.filter_by(name=name).first()
+            if not tag:
+                tag = Tag(name=name)
+                db.session.add(tag)
+                db.session.flush()
+            tags.append(tag)
+
         db.session.add(person)
+        db.session.commit()
+
+        entries = [
+            {'person_id': person.id, 'tag_id': tag.id, 'order': idx}
+            for idx, tag in enumerate(tags)
+        ]
+
+        if entries:
+            db.session.execute(person_tag.insert(), entries)
+
         db.session.commit()
 
         flash('Deine Änderungen wurden eingereicht und werden reviewt.', 'info')
@@ -99,4 +123,8 @@ def edit_person(hash_id):
         )
 
     # GET: show current approved version in form
-    return render_template('edit.html', person=person)
+    form_data = {
+        'tags': ','.join(tag.name for tag in person.tags),
+    }
+
+    return render_template('edit.html', person=person, form_data=form_data)

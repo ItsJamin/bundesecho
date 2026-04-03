@@ -1,0 +1,40 @@
+name: Contributor License Agreement Check
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  cla-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get GitHub username of contributor
+        id: contributor
+        run: echo "username=${{ github.actor }}" >> $GITHUB_OUTPUT
+
+      - name: Check if contributor signed the CLA
+        id: cla
+        run: |
+          if grep -Fxq "${{ steps.contributor.outputs.username }}" contributors.txt; then
+            echo "signed=true" >> $GITHUB_OUTPUT
+          else
+            echo "signed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Apply PR label based on CLA status
+        uses: actions-ecosystem/action-add-labels@v1
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            ${{ steps.cla.outputs.signed == 'true' && 'cla-signed' || 'cla-missing' }}
+
+      - name: Fail if CLA not signed
+        if: steps.cla.outputs.signed == 'false'
+        run: |
+          echo "Contributor has not signed the CLA."
+          echo "Please add your GitHub username to contributors.txt in a separate pull request."
+          exit 1

@@ -80,6 +80,14 @@
           {{ quote.source }}
         {% endif %}
       </div>
+    {% elif quote.secondary_source %}
+      <div class="quote-source">
+        {% if quote.secondary_source.startswith("http") %}
+          <a href="{{ quote.secondary_source }}" target="_blank" rel="noopener noreferrer">{{ quote.secondary_source }}</a>
+        {% else %}
+          {{ quote.secondary_source }}
+        {% endif %}
+      </div>
     {% endif %}
 
   {% if quote.tags %}

@@ -63,6 +63,7 @@ def submit_quote():
         context = request.form.get('context', '').strip()
         person_name = request.form.get('person', '').strip()
         source = request.form.get('source', '').strip()
+        secondary_source = request.form.get('secondary_source', '').strip()
         tags_raw = request.form.get('tags', '').strip()
         date_said_raw = request.form.get('date_said')
         date_said = None
@@ -80,7 +81,7 @@ def submit_quote():
             errors.append('Aussage ist erforderlich.')
         if not person_name:
             errors.append('Person ist erforderlich.')
-        if not source:
+        if not source and not secondary_source:
             errors.append('Quelle ist erforderlich.')
         if request.form.get('is_translation') == '1':
             if not orig_text:
@@ -157,6 +158,7 @@ def submit_quote():
             orig_text=orig_text if orig_text else None,
             orig_lang=orig_lang if orig_lang else None,
             source=source if source else None,
+            secondary_source=secondary_source if secondary_source else None,
             meta_person=meta_person,
             date_said=date_said,
             meta_quote_id=meta_quote.id,

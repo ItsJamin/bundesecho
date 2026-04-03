@@ -13,9 +13,22 @@
 
 {% endif %}
 
+{% if quote.secondary_source and quote.source %}
+
+<h4>Sekundäre Quelle</h4>
+<div class="quote-source">
+  {% if quote.secondary_source.startswith("http") %}
+    <a href="{{ quote.secondary_source }}" target="_blank" rel="noopener noreferrer">{{ quote.secondary_source }}</a>
+  {% else %}
+    {{ quote.secondary_source }}
+  {% endif %}
+</div>
+
+<br>
+
+{% endif %}
 
 <h4>Person</h4>
-
 
 {% include("person_box.html") %}
 

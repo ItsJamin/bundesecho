@@ -33,6 +33,11 @@
   </div>
 
   <div class="mb-3">
+    <label class="form-label">Sekundäre Quelle</label>
+    <input type="text" name="secondary_source" class="form-control" value="{{ quote.secondary_source or '' }}">
+  </div>
+
+  <div class="mb-3">
     <label class="form-label">Person</label>
     <label type="text" id="person" name="person" class="form-control text-primary" disabled>
       {{ quote.meta_person.get_latest().name if quote.meta_person.get_latest() else 'Keine zugelassene Version der Person gefunden!' }}

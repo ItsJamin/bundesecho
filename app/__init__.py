@@ -24,7 +24,10 @@ def create_app(config_name='development'):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # configure the separate database for statistics
-    app.config['SQLALCHEMY_BINDS'] = {'stats': 'sqlite:///stats.db'}
+    app.config['SQLALCHEMY_BINDS'] = {
+        'stats': 'sqlite:///stats.db',
+        'about': 'sqlite:///about.db',
+    }
 
     app.secret_key = os.environ.get('SECRET_KEY', 'unsafe_default_dev_key')
 
@@ -45,6 +48,7 @@ def create_app(config_name='development'):
     login_manager.login_view = 'auth.login'
 
     from . import models  # noqa: PLC0415
+    from .about_models import InfoNews  # noqa: F401, PLC0415
     from .stats_models import VisitStat  # noqa: PLC0415
 
     # no need to initialize stats_db separately, as it uses the main db instance with a bind key

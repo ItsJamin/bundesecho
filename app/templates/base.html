@@ -95,6 +95,9 @@
                         <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
                     </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.about') }}">Info</a>
+                    </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
@@ -127,14 +130,20 @@
     <footer class="text-center py-4">
         <small>&copy; 2025 BundesEcho</small>
         <br>
+
+        <a href="mailto:bundesecho@gmail.com" class="text-center text-decoration-none">
+            <i class="bi bi-envelope-fill" style="font-size: 1.2rem;"></i>
+            <span class="visually-hidden">E-Mail</span>
+        </a>
+        
         <a href="https://www.instagram.com/bundesecho" target="_blank" class="text-center text-decoration-none">
             <i class="bi bi-instagram" style="font-size: 1.2rem;"></i>
             <span class="visually-hidden">Instagram</span>
         </a>
 
-        <a href="mailto:bundesecho@gmail.com" class="text-center text-decoration-none">
-            <i class="bi bi-envelope-fill" style="font-size: 1.2rem;"></i>
-            <span class="visually-hidden">E-Mail</span>
+        <a href="https://github.com/ItsJamin/bundesecho" class="text-center text-decoration-none">
+            <i class="bi bi-github" style="font-size: 1.2rem;"></i>
+            <span class="visually-hidden">GitHub</span>
         </a>
         <br>
         <small>1.2.2</small>

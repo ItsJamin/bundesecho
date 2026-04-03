@@ -228,12 +228,21 @@ def search():
             query = query.filter(
                 or_(
                     or_(
-                        QuoteAlias.text.ilike(f'%{q}%'),
-                        QuoteAlias.context.ilike(f'%{q}%'),
+                        or_(
+                            QuoteAlias.text.ilike(f'%{q}%'),
+                            or_(
+                                QuoteAlias.orig_text.ilike(f'%{q}%'),
+                                QuoteAlias.context.ilike(f'%{q}%'),
+                            ),
+                        ),
+                        or_(
+                            or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                            Person.tags.any(Tag.name.ilike(f'%{q}%')),
+                        ),
                     ),
                     or_(
-                        or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
-                        Person.tags.any(Tag.name.ilike(f'%{q}%')),
+                        QuoteAlias.source.ilike(f'%{q}%'),
+                        QuoteAlias.secondary_source.ilike(f'%{q}%'),
                     ),
                 )
             )
@@ -312,7 +321,10 @@ def search():
             query = query.filter(
                 or_(
                     QuoteAlias.text.ilike(f'%{text_query}%'),
-                    QuoteAlias.context.ilike(f'%{text_query}%'),
+                    or_(
+                        QuoteAlias.orig_text.ilike(f'%{text_query}%'),
+                        QuoteAlias.context.ilike(f'%{text_query}%'),
+                    ),
                 )
             )
 

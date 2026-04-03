@@ -66,6 +66,9 @@ def submit_quote():
         tags_raw = request.form.get('tags', '').strip()
         date_said_raw = request.form.get('date_said')
         date_said = None
+        orig_text = request.form.get('orig_text', '').strip()
+        orig_lang = request.form.get('orig_lang', '').strip()
+
         if date_said_raw:
             try:
                 date_said = datetime.strptime(date_said_raw, '%Y-%m-%d')
@@ -79,6 +82,11 @@ def submit_quote():
             errors.append('Person ist erforderlich.')
         if not source:
             errors.append('Quelle ist erforderlich.')
+        if request.form.get('is_translation') == '1':
+            if not orig_text:
+                errors.append('Originaltext ist erforderlich.')
+            if not orig_lang:
+                errors.append('Originalsprache ist erforderlich.')
 
         if errors:
             return render_template('submit.html', errors=errors, form_data=request.form)
@@ -146,6 +154,8 @@ def submit_quote():
         quote = Quote(
             text=text,
             context=context,
+            orig_text=orig_text if orig_text else None,
+            orig_lang=orig_lang if orig_lang else None,
             source=source if source else None,
             meta_person=meta_person,
             date_said=date_said,

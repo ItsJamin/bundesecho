@@ -14,6 +14,19 @@
     <textarea name="context" class="form-control" rows="2">{{ quote.context or '' }}</textarea>
   </div>
 
+  {% if quote.orig_text %}
+
+  <div class="mb-3">
+    <label class="form-label">Originaltext</label>
+    <textarea name="orig_text" class="form-control" rows="4">{{ quote.orig_text }}</textarea>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Originalsprache</label>
+    <input type="text" name="orig_lang" class="form-control" value="{{ quote.orig_lang or '' }}">
+  </div>
+  {% endif %}
+
   <div class="mb-3">
     <label class="form-label">Quelle</label>
     <input type="text" name="source" class="form-control" value="{{ quote.source or '' }}">

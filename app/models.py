@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from hashids import Hashids
+from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import func
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -118,9 +119,12 @@ class Quote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     context = db.Column(db.Text, nullable=True)
-    source = db.Column(db.String(255))
+    source = db.Column(db.String(255), nullable=True)
+    secondary_source = db.Column(db.String(255), nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_said = db.Column(db.DateTime, nullable=True)
+    orig_text = db.Column(db.Text, nullable=True)
+    orig_lang = db.Column(db.String(2), nullable=True)
 
     meta_person_id = db.Column(
         db.Integer, db.ForeignKey('meta_person.id'), nullable=False
@@ -145,6 +149,13 @@ class Quote(db.Model):
 
     reviewed_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reviewed_by = db.relationship('User', foreign_keys=[reviewed_by_id])
+
+    __table_args__ = (
+        CheckConstraint(
+            '(source IS NOT NULL) OR (secondary_source IS NOT NULL)',
+            name='ck_source_or_secondary_required',
+        ),
+    )
 
 
 class Tag(db.Model):

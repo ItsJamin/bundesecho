@@ -62,6 +62,13 @@
         {% if person.description %}
           <span class="quote-context">({{ person.description }})</span>
         {% endif %}
+        {%if person.tags %}
+        {% for tag in person.tags %}
+          {% if tag in quote.tags %}
+            <a href="{{ url_for('quote.search', mode='advanced', person_tags=[tag.id])}}" class="quote-tag person-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+          {% endif %}
+        {% endfor %}
+        {% endif %}
       </div>
     {% endif %}
   </div>
@@ -78,7 +85,9 @@
   {% if quote.tags %}
     <div class="quote-tags">
       {% for tag in quote.tags %}
-        <a href="{{ url_for('quote.search', mode='advanced', tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+        {% if tag not in person.tags %}
+          <a href="{{ url_for('quote.search', mode='advanced', tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+        {% endif %}
       {% endfor %}
     </div>
   {% endif %}

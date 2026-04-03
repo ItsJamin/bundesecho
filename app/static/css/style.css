@@ -220,6 +220,11 @@ a:hover {
     text-decoration: none;
 }
 
+.quote-tag.person-tag {
+    background-color: #2e3b4e;
+    font-weight: normal;
+}
+
 .quote-date {
     font-size: 0.75rem;
     color: #a8b0bb;

@@ -221,7 +221,10 @@ def search():
                         QuoteAlias.text.ilike(f'%{q}%'),
                         QuoteAlias.context.ilike(f'%{q}%'),
                     ),
-                    or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                    or_(
+                        or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                        Person.tags.any(Tag.name.ilike(f'%{q}%')),
+                    ),
                 )
             )
         query = query.order_by(QuoteAlias.date_said.desc())

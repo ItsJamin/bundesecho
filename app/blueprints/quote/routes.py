@@ -93,7 +93,7 @@ def submit_quote():
             return render_template('submit.html', errors=errors, form_data=request.form)
 
         # find or create MetaPerson and Person
-        # TODO: replace with more robust logic to create in review stop not submit
+        # TODO: replace with more robust logic to create in review step not submit
         meta_person = MetaPerson.query.filter(
             MetaPerson.persons.any(
                 and_(
@@ -112,6 +112,9 @@ def submit_quote():
                 meta_person_id=meta_person.id,
                 status=ReviewStatus.PENDING.value,
                 submitted_by_id=current_user.id,
+                description='',
+                image_url='',
+                image_src='',
             )
             db.session.add(person)
             db.session.flush()
@@ -132,7 +135,7 @@ def submit_quote():
                 db.session.flush()
 
         # process tags: find existing or create new ones
-        # TODO: replace with more robust logic to create in review stop not submit
+        # TODO: replace with more robust logic to create in review step not submit
         tag_names = [t.strip() for t in tags_raw.split(',') if t.strip()]
         tags = []
         for name in tag_names:

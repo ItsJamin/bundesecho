@@ -11,7 +11,7 @@
   <textarea name="description" class="form-control">{{ person.description }}</textarea>
 
   <label>Bild-URL:</label>
-  <input type="text" name="image_url" class="form-control" value="{{ person.image_url }}" autocomplete="off">
+  <input type="text" name="image_url" class="form-control" value="{{ person.image_url or '' }}" autocomplete="off">
 
   <label>Bildquelle:</label>
   <input type="text" name="image_src" class="form-control" value="{{ person.image_src or '' }}" autocomplete="off">

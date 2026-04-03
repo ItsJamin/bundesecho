@@ -10,11 +10,11 @@
       {% if person.image_src %}
         <a href="{{ person.image_src }}" target="_blank" rel="noopener noreferrer">
           <img src="{{ person.image_url }}" alt="{{ person.name }}"
-              class="quote-person-image-big mb-2 mb-md-0">
+              class="quote-person-image-big mb-2 mb-md-0" onerror="this.style.display='none'">
         </a>
       {% else %}
         <img src="{{ person.image_url }}" alt="{{ person.name }}"
-            class="quote-person-image-big mb-2 mb-md-0">
+            class="quote-person-image-big mb-2 mb-md-0" onerror="this.style.display='none'">
       {% endif %}
     {% endif %}
 

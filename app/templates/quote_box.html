@@ -55,6 +55,7 @@
         src="{{ person.image_url if person.image_url else url_for('static', filename='img/person-placeholder.svg') }}"
         alt="{{ person.name }}"
         class="quote-person-image me-2"
+        onerror="this.style.display='none'"
       >
       <div class="person-info">
         <a class="quote-person" href="{{ url_for('person.person_detail', hash_id=person_hashs.encode(person.meta_person_id)) }}" {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ person.name }}</a>

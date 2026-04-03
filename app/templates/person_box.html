@@ -6,8 +6,7 @@
             src="{{ url_for('static', filename='img/person-placeholder.svg') }}"
             data-src="{{ person.image_url }}"
             alt="{{ person.name }}"
-            class="lazy-image"
-            />
+            class="lazy-image" onerror="this.style.display='none'"/>
         {% else %}
             <img src="{{ url_for('static', filename='img/person-placeholder.svg') }}" alt="Platzhalter">
         {% endif %}
@@ -20,4 +19,3 @@
         </div>
     </div>
 </a>
-    

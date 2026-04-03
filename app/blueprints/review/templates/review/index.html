@@ -3,6 +3,9 @@
 {% block content %}
 <h2 class="mb-4">Ausstehende Änderungen</h2>
 
+<a href="{{ url_for('review.review_tags') }}" class="btn btn-sm btn-primary">Tags anpassen</a>
+
+
 {% if persons %}
 <h3>Personen</h3>
 <div class="table-responsive mb-5">

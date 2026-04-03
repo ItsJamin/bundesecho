@@ -12,7 +12,7 @@
       <input type="text" id="simple-query" name="q" class="form-control" 
              placeholder="Suche nach Aussagen, Personen oder Themen" 
              value="{{ text_query or '' }}"
-             autocomplete="off">
+             autocomplete="off" autofocus>
     </div>
 
     <!-- Button row -->
@@ -31,7 +31,7 @@
     <div class="form-group">
       <label for="text-query">Text</label>
       <input type="text" id="text-query" name="text_query" class="form-control" autocomplete="off"
-             placeholder="Wort oder Satzteil im Zitat" value="{{ text_query or '' }}">
+             placeholder="Wort oder Satzteil im Zitat" value="{{ text_query or '' }}" autofocus>
     </div>
 
     <!-- Tags -->

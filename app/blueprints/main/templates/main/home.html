@@ -18,7 +18,7 @@
         <div class="col-12 col-md-9">
             <input type="text" id="simple-query" name="q" class="form-control"
                    placeholder="Suche nach Aussagen, Personen oder Themen"
-                   value="{{ text_query or '' }}" autocomplete="off">
+                   value="{{ text_query or '' }}" autocomplete="off" autofocus>
         </div>
 
         <div class="col-12 col-md-3 d-grid">
@@ -28,7 +28,8 @@
         </div>
     </div>
 
-    
+    <p class="text-muted p-2">oder reiche
+      <a class="text-muted" href="{{ url_for('quote.submit_request') }}">hier</a> eine Aussage ein.</p>
 </form>
 
 <br>

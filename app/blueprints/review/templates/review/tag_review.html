@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Edit Tags{% endblock %}
+{% block content %}
+
+<h2>Tags bearbeiten</h2>
+
+<form method="POST">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Kategorie</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tag in tags %}
+      <tr>
+        <td>{{ tag.name }}</td>
+        <td>
+          <select name="category_{{ tag.id }}" class="form-control">
+            <option value="" {% if not tag.category %}selected{% endif %}>Keine Kategorie</option>
+            {% for category in categories %}
+            <option value="{{ category.value }}" {% if tag.category and tag.category.value == category.value %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+            </select>
+        </td>
+      </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+</form>
+
+{% endblock %}

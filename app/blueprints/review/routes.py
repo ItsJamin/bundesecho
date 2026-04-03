@@ -10,6 +10,7 @@ from app.models import (
     RelatedMetaQuote,
     ReviewStatus,
     Tag,
+    TagCategory,
     db,
 )
 
@@ -164,3 +165,24 @@ def delete_quote_request(id):
     db.session.commit()
     flash('QuoteRequest wurde gelöscht.', 'success')
     return redirect(url_for('review.index'))
+
+
+@review_bp.route('/tags', methods=['GET', 'POST'])
+def review_tags():
+    tags = Tag.query.all()
+
+    if request.method == 'POST':
+        for tag in tags:
+            new_category = request.form.get(f'category_{tag.id}', '').strip()
+
+            if new_category not in TagCategory._value2member_map_:
+                continue
+
+            # TODO: add enum value to category field of tag
+            tag.category = TagCategory(new_category)
+            db.session.commit()
+
+        flash('Kategorien wurden aktualisiert.', 'success')
+        return redirect(url_for('review.review_tags'))
+
+    return render_template('tag_review.html', tags=tags, categories=TagCategory)

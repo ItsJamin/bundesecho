@@ -221,7 +221,10 @@ def search():
                         QuoteAlias.text.ilike(f'%{q}%'),
                         QuoteAlias.context.ilike(f'%{q}%'),
                     ),
-                    or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                    or_(
+                        or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                        Person.tags.any(Tag.name.ilike(f'%{q}%')),
+                    ),
                 )
             )
         query = query.order_by(QuoteAlias.date_said.desc())
@@ -230,6 +233,8 @@ def search():
         selected_meta_person_id = request.args.get('meta_person')
         selected_tag_ids = request.args.getlist('tags')
         selected_tag_neg_ids = request.args.getlist('tags_neg')
+        selected_person_tag_ids = request.args.getlist('person_tags')
+        selected_person_tag_neg_ids = request.args.getlist('person_tags_neg')
         text_query = request.args.get('text_query', '').strip()
         date_from_str = request.args.get('date_from', '').strip()
         date_to_str = request.args.get('date_to', '').strip()
@@ -262,6 +267,35 @@ def search():
                     .subquery()
                 )
                 query = query.filter(~QuoteAlias.id.in_(subquery))
+
+        # person tags (AND logic for positive selections)
+        if selected_person_tag_ids:
+            person_tag_ids = list(map(int, selected_person_tag_ids))
+            if person_tag_ids:
+                person_tag_meta_ids = (
+                    db.session
+                    .query(Person.meta_person_id)
+                    .join(Person.tags)
+                    .filter(Tag.id.in_(person_tag_ids))
+                    .group_by(Person.meta_person_id)
+                    .having(func.count(func.distinct(Tag.id)) == len(person_tag_ids))
+                    .subquery()
+                )
+                query = query.filter(QuoteAlias.meta_person_id.in_(person_tag_meta_ids))
+
+        if selected_person_tag_neg_ids:
+            person_tag_neg_ids = list(map(int, selected_person_tag_neg_ids))
+            if person_tag_neg_ids:
+                person_tag_neg_meta_ids = (
+                    db.session
+                    .query(Person.meta_person_id)
+                    .join(Person.tags)
+                    .filter(Tag.id.in_(person_tag_neg_ids))
+                    .subquery()
+                )
+                query = query.filter(
+                    ~QuoteAlias.meta_person_id.in_(person_tag_neg_meta_ids)
+                )
 
         # text query
         if text_query:
@@ -316,17 +350,28 @@ def search():
         html = render_template('quote_boxes_ajax.html', quotes=quotes)
         return {'html': html, 'has_next': paginated.has_next}
 
-    # -------- prepare tags for rendering in order --------
+    # -------- prepare tags and person tags for rendering in order --------
     selected_tags = []
+    selected_person_tags = []
     if mode == 'advanced':
         ordered_tag_ids = selected_tag_ids + selected_tag_neg_ids
+        ordered_person_tag_ids = selected_person_tag_ids + selected_person_tag_neg_ids
         tags_dict = {str(tag.id): tag for tag in tags}
+
         for tid in ordered_tag_ids:
             if tid in tags_dict:
                 selected_tags.append({
                     'id': tags_dict[tid].id,
                     'name': tags_dict[tid].name,
                     'negative': tid in selected_tag_neg_ids,
+                })
+
+        for tid in ordered_person_tag_ids:
+            if tid in tags_dict:
+                selected_person_tags.append({
+                    'id': tags_dict[tid].id,
+                    'name': tags_dict[tid].name,
+                    'negative': tid in selected_person_tag_neg_ids,
                 })
 
     return render_template(
@@ -338,6 +383,11 @@ def search():
         selected_meta_person_id=request.args.get('meta_person'),
         selected_tag_ids=selected_tag_ids if mode == 'advanced' else [],
         selected_tag_neg_ids=selected_tag_neg_ids if mode == 'advanced' else [],
+        selected_person_tag_ids=selected_person_tag_ids if mode == 'advanced' else [],
+        selected_person_tag_neg_ids=selected_person_tag_neg_ids
+        if mode == 'advanced'
+        else [],
+        selected_person_tags=selected_person_tags,
         text_query=request.args.get('text_query', '')
         if mode == 'advanced'
         else request.args.get('q', ''),

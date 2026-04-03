@@ -24,7 +24,7 @@ class ReviewStatus(enum.Enum):
 class TagCategory(enum.Enum):
     PARTY = 'PARTY'  # e.g. CDU, SPD, AfD
     REGION = 'REGION'  # e.g. International, Germany, Bavaria
-    # PERIOD = 'PERIOD'  # e.g. Bundestag 2019-2024
+    ORGANIZATION = 'ORGANIZATION'  # e.g. UN, NATO, WHO
 
 
 # Main Info Models

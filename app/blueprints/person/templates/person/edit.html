@@ -35,15 +35,27 @@
   <br><br>
 
   <label for="image_src">
-    Bildquelle / Copyright
+    Bildquelle
     <i class="bi bi-info-circle-fill ms-1"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
-          title="Quelle des Bildes bzw. Copyright-Angabe, z.B. 'Wikimedia Commons, Foto von Max Mustermann' oder 'Bundestagsseite'.">
+          title="Quelle des Bildes, z.B. ein Link zur Seite, von der das Bild stammt.">
     </i>
   </label><br>
   <input type="text" name="image_src" class="form-control" 
         value="{{ person.image_src or '' }}" autocomplete="off">
+  <br><br>
+
+  <label for="image_copyright">
+    Copyright Hinweis
+    <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Copyright-Angabe, z.B. 'Wikimedia Commons, Foto von Max Mustermann' oder 'Bundestagsseite'.">
+    </i>
+  </label><br>
+  <input type="text" name="image_copyright" class="form-control" 
+        value="{{ person.image_copyright or '' }}" autocomplete="off">
   <br><br>
 
   <div class="form-group">

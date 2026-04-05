@@ -13,38 +13,49 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Get GitHub username of contributor
+      - name: Get contributor username
         id: contributor
-        run: echo "username=${{ github.actor }}" >> $GITHUB_OUTPUT
+        run: |
+          echo "username=${{ github.actor }}" >> $GITHUB_OUTPUT
 
       - name: Check if contributor signed the CLA
         id: cla
         run: |
+          # Check if the contributor's GitHub username exists in contributors.txt
           if grep -Fxq "${{ steps.contributor.outputs.username }}" contributors.txt; then
             echo "signed=true" >> $GITHUB_OUTPUT
           else
             echo "signed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Add label cla-signed
+      - name: Add label 'cla-signed'
         if: steps.cla.outputs.signed == 'true'
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: cla-signed
+        run: |
+          # Add "cla-signed" label to the pull request
+          gh api \
+            repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels \
+            --method POST \
+            --input - <<< '{"labels":["cla-signed"]}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Add label cla-missing
-        if: steps.cla.outputs.signed == 'false'
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: cla-missing
-
-      - name: Fail if CLA not signed
+      - name: Add label 'cla-missing'
         if: steps.cla.outputs.signed == 'false'
         run: |
+          # Add "cla-missing" label to the pull request
+          gh api \
+            repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels \
+            --method POST \
+            --input - <<< '{"labels":["cla-missing"]}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if CLA is not signed
+        if: steps.cla.outputs.signed == 'false'
+        run: |
+          # Stop the workflow and request a CLA signature
           echo "Contributor has not signed the CLA."
           echo "Please add your GitHub username to contributors.txt in a separate pull request."
           exit 1

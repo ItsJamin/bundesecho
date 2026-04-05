@@ -69,6 +69,7 @@ def review_person(id):
             person.description = request.form.get('description', '').strip()
             person.image_url = request.form.get('image_url', '').strip()
             person.image_src = request.form.get('image_src', '').strip()
+            person.image_copyright = request.form.get('image_copyright', '').strip()
             person.status = ReviewStatus.APPROVED
 
         person.reviewed_by = current_user
@@ -98,6 +99,7 @@ def review_quote(id):
             quote.text = request.form.get('text', '').strip()
             quote.context = request.form.get('context', '').strip()
             quote.source = request.form.get('source', '').strip()
+            quote.secondary_source = request.form.get('secondary_source', '').strip()
             date_said = request.form.get('date_said', '').strip()
             if date_said:
                 try:

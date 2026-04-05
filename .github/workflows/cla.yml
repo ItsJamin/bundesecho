@@ -1,12 +1,16 @@
 name: Contributor License Agreement Check
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, reopened, synchronize]
 
 jobs:
   cla-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,13 +28,19 @@ jobs:
             echo "signed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Apply PR label based on CLA status
+      - name: Add label cla-signed
+        if: steps.cla.outputs.signed == 'true'
         uses: actions-ecosystem/action-add-labels@v1
-        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            ${{ steps.cla.outputs.signed == 'true' && 'cla-signed' || 'cla-missing' }}
+          labels: cla-signed
+
+      - name: Add label cla-missing
+        if: steps.cla.outputs.signed == 'false'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: cla-missing
 
       - name: Fail if CLA not signed
         if: steps.cla.outputs.signed == 'false'

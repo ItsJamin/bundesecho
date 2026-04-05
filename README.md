@@ -1,6 +1,7 @@
 # About [BundesEcho](https://www.bundesecho.de)
 
 BundesEcho is a (now open-source) archive for saving and searching political quotes, with a focus on (but not limited to) german politics.
+You can find the website [here](https://www.bundesecho.de).
 
 The aim of this project is to:
 - hold public figures accountable for what they say

@@ -22,7 +22,6 @@ indirect—is considered commercial use and is prohibited without a commercial l
 ## 2. No Misuse / Moral-Use Clause
 The Software must not be used to:
 - mislead, manipulate, or deceive users
-- discriminate against individuals or groups
 - promote misinformation or disinformation
 - violate applicable law or human rights
 
@@ -37,7 +36,7 @@ include clear attribution:
 - a statement identifying modifications, if applicable
 
 Example:
-“Based on BundesEcho by <Author>, licensed under the BundesEcho License.”
+“Based on BundesEcho by @ItsJamin, licensed under the BundesEcho License.”
 
 ## 4. Modifications and Redistribution
 You may modify the Software and share modified versions under the following conditions:

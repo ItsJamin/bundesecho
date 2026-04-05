@@ -17,7 +17,6 @@
             class="quote-person-image-big mb-2 mb-md-0" onerror="this.style.display='none'">
       {% endif %}
     {% endif %}
-
     <div>
       <h1 class="mb-1">{{ person.name }}</h1>
 
@@ -54,6 +53,10 @@
     </a>
   </div>
 </div>
+
+{% if person.image_copyright %}
+  <p class="text-muted fs-6 fst-italic text-center text-md-start">Bild: {{ person.image_copyright }}</p>
+{% endif %}
 
 <h2>{{ quote_count }} {{ "Zitat" if quote_count == 1 else "Zitate" }}</h2>
 {% for quote in quotes %}

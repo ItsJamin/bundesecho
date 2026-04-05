@@ -87,6 +87,9 @@ def edit_person(hash_id):
             image_src=request.form.get('image_src')
             if request.form.get('image_src') not in [None, 'None', '']
             else None,
+            image_copyright=request.form.get('image_copyright')
+            if request.form.get('image_copyright') not in [None, 'None', '']
+            else None,
             status=ReviewStatus.PENDING,
             submitted_by_id=current_user.id,
         )

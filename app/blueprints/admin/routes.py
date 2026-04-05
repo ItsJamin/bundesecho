@@ -73,11 +73,22 @@ def clean_stat():
 def stats():
     today = date.today()
 
-    clicks_today = db.session.query(db.func.sum(VisitStat.count)).scalar()
+    clicks_today = (
+        db.session
+        .query(db.func.sum(VisitStat.count))
+        .filter(VisitStat.date == today)
+        .scalar()
+    )
     if clicks_today is None:
         clicks_today = 0
 
-    unique_visitors_today = db.session.query(VisitStat.session_id).distinct().count()
+    unique_visitors_today = (
+        db.session
+        .query(VisitStat.session_id)
+        .filter(VisitStat.date == today)
+        .distinct()
+        .count()
+    )
 
     # top 5 most visited routes for today, filtered by /p/view/* and /q/view/*
     top_routes_today = (

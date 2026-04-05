@@ -11,6 +11,29 @@
     Öffentliche Aussagen politischer Akteur:innen – im Original, mit Quelle und Kontext. Klar dokumentiert. Schnell auffindbar.
   </p>
 
+  <form method="GET" action="{{ url_for('quote.search') }}" id="simple-search-form" novalidate>
+    <input type="hidden" name="mode" value="simple">
+
+    <div class="row g-2">  
+        <div class="col-12 col-md-9">
+            <input type="text" id="simple-query" name="q" class="form-control"
+                   placeholder="Suche nach Aussagen, Personen oder Themen"
+                   value="{{ text_query or '' }}" autocomplete="off">
+        </div>
+
+        <div class="col-12 col-md-3 d-grid">
+            <button type="submit" class="btn btn-bg btn-outline-light">
+                Suchen
+            </button>
+        </div>
+    </div>
+
+    <p class="text-muted p-2">oder reiche
+      <a class="text-muted" href="{{ url_for('quote.submit_request') }}">hier</a> eine Aussage ein.</p>
+</form>
+
+<br>
+
   <h2 class="mb-5">Zitat des Tages</h2>
   
 
@@ -64,7 +87,8 @@
     <br><br>
     Um eine wirkliche Fairness jeder Position zu ermöglichen, kann jeder Zitate einreichen. Nachdem die Korrektheit und Quelle überprüft worden ist, wird das Zitat mitaufgenommen.
     <br><br>
-    Diese Datenbank ist nur für Aussagen aus der deutschen Politik. Das beinhaltet deutsche politische Entscheidungsträger, Parteien und Debattenteilnehmer aus Medien.
+    Diese Datenbank fokussiert sich auf Aussagen aus der deutschen Politik. Das beinhaltet deutsche politische Entscheidungsträger, Parteien und Debattenteilnehmer aus Medien.
+    Zitate von internationalen Akteur:innen werden zwar auch aufgenommen, aber haben optimalerweise einen Bezug zum deutschen politischen Diskurs.
   </p>
 
 </div>

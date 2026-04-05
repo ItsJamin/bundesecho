@@ -7,6 +7,7 @@ from xml.sax.saxutils import escape
 from flask import (
     Blueprint,
     Response,
+    flash,
     jsonify,
     redirect,
     render_template,
@@ -18,6 +19,9 @@ from flask import (
 )
 from sqlalchemy import func
 
+from app import db
+from app.about_models import InfoNews
+from app.blueprints.admin.routes import is_admin
 from app.models import MetaPerson, MetaQuote, Person, Tag, person_hashs
 
 
@@ -43,6 +47,40 @@ def home():
         quote_count=round_down_to_magnitude(len(valid_quotes)),
         person_count=round_down_to_magnitude(len(valid_persons)),
     )
+
+
+@main_bp.route('/about')
+def about():
+    news_items = InfoNews.query.order_by(InfoNews.id.desc()).all()
+    return render_template('about.html', news_list=news_items)
+
+
+@main_bp.route('/add_news', methods=['GET', 'POST'])
+def add_news():
+    if not is_admin():
+        flash('You are not authorized to add news items.', 'danger')
+        return redirect(url_for('main.about'))
+
+    if request.method == 'GET':
+        return render_template('add_news.html')
+
+    title = request.form.get('title')
+    content = request.form.get('content')
+
+    if not title or not content:
+        flash('Title and content are required.', 'danger')
+        return redirect(url_for('main.add_news'))
+
+    new_news = InfoNews(
+        title=title,
+        content=content,
+        date=date.today(),
+    )
+    db.session.add(new_news)
+    db.session.commit()
+
+    flash('News item added successfully!', 'success')
+    return redirect(url_for('main.about'))
 
 
 @main_bp.route('/api/random_quote')

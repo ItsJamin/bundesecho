@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set quote_count = quotes | length %}
-{% block title %}{{ person.name }} - BundesEcho{% endblock %}
+{% block title %}{{ person.name }} Zitate mit Quelle und Kontext - BundesEcho{% endblock %}
 {% block content %}
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
@@ -10,23 +10,41 @@
       {% if person.image_src %}
         <a href="{{ person.image_src }}" target="_blank" rel="noopener noreferrer">
           <img src="{{ person.image_url }}" alt="{{ person.name }}"
-              class="quote-person-image-big mb-2 mb-md-0">
+              class="quote-person-image-big mb-2 mb-md-0" onerror="this.style.display='none'">
         </a>
       {% else %}
         <img src="{{ person.image_url }}" alt="{{ person.name }}"
-            class="quote-person-image-big mb-2 mb-md-0">
+            class="quote-person-image-big mb-2 mb-md-0" onerror="this.style.display='none'">
       {% endif %}
     {% endif %}
-
-
     <div>
       <h1 class="mb-1">{{ person.name }}</h1>
 
       {% if person.description %}
         <p class="mb-2">{{ person.description }}</p>
       {% endif %}
-    </div>
+    
+
+    {% if tags %}
+      <div class="quote-tags">
+        {% for tag in tags %}
+          {% if tag.category and tag.category.value == 'PARTY' %}
+          <a href="{{ url_for('quote.search', mode='advanced', person_tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="quote-tags">
+        {% for tag in tags %}
+          {% if tag.category and tag.category.value == 'REGION' %}
+          <a href="{{ url_for('quote.search', mode='advanced', person_tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+  {% endif %}
   </div>
+
+  </div>
+
 
   <div class="text-center text-md-end">
     <a class="btn btn-outline-light btn-bg"
@@ -35,6 +53,10 @@
     </a>
   </div>
 </div>
+
+{% if person.image_copyright %}
+  <p class="text-muted fs-6 fst-italic text-center text-md-start">Bild: {{ person.image_copyright }}</p>
+{% endif %}
 
 <h2>{{ quote_count }} {{ "Zitat" if quote_count == 1 else "Zitate" }}</h2>
 {% for quote in quotes %}

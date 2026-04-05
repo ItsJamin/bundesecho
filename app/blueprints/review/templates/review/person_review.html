@@ -11,10 +11,23 @@
   <textarea name="description" class="form-control">{{ person.description }}</textarea>
 
   <label>Bild-URL:</label>
-  <input type="text" name="image_url" class="form-control" value="{{ person.image_url }}" autocomplete="off">
+  <input type="text" name="image_url" class="form-control" value="{{ person.image_url or '' }}" autocomplete="off">
 
   <label>Bildquelle:</label>
   <input type="text" name="image_src" class="form-control" value="{{ person.image_src or '' }}" autocomplete="off">
+
+  <label>Copyright Hinweis:</label>
+  <input type="text" name="image_copyright" class="form-control" value="{{ person.image_copyright or '' }}" autocomplete="off">
+
+
+  <div class="form-group mb-3">
+    <label for="tags-input">Tags</label>
+    <input type="text" id="tags-input" class="form-control" placeholder="">
+    <ul id="tag-suggestions" class="suggestions-list"></ul>
+    <div id="selected-tags" class="selected-tags"></div>
+    <input type="hidden" name="tags" id="tags-hidden" value="{{ person.tags | map(attribute='name') | join(',') }}">
+
+  </div>
 
 
   <div class="mt-3">
@@ -29,4 +42,6 @@
 
 <h2>Vorschau der eingereichten Daten</h2>
 {% include "person_box.html" %}
+
+<script src="{{ url_for('static', filename='js/tag-autocomplete.js') }}"></script>
 {% endblock %}

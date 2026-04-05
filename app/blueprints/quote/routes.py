@@ -63,9 +63,13 @@ def submit_quote():
         context = request.form.get('context', '').strip()
         person_name = request.form.get('person', '').strip()
         source = request.form.get('source', '').strip()
+        secondary_source = request.form.get('secondary_source', '').strip()
         tags_raw = request.form.get('tags', '').strip()
         date_said_raw = request.form.get('date_said')
         date_said = None
+        orig_text = request.form.get('orig_text', '').strip()
+        orig_lang = request.form.get('orig_lang', '').strip()
+
         if date_said_raw:
             try:
                 date_said = datetime.strptime(date_said_raw, '%Y-%m-%d')
@@ -77,14 +81,19 @@ def submit_quote():
             errors.append('Aussage ist erforderlich.')
         if not person_name:
             errors.append('Person ist erforderlich.')
-        if not source:
+        if not source and not secondary_source:
             errors.append('Quelle ist erforderlich.')
+        if request.form.get('is_translation') == '1':
+            if not orig_text:
+                errors.append('Originaltext ist erforderlich.')
+            if not orig_lang:
+                errors.append('Originalsprache ist erforderlich.')
 
         if errors:
             return render_template('submit.html', errors=errors, form_data=request.form)
 
         # find or create MetaPerson and Person
-        # TODO: replace with more robust logic to create in review stop not submit
+        # TODO: replace with more robust logic to create in review step not submit
         meta_person = MetaPerson.query.filter(
             MetaPerson.persons.any(
                 and_(
@@ -103,6 +112,9 @@ def submit_quote():
                 meta_person_id=meta_person.id,
                 status=ReviewStatus.PENDING.value,
                 submitted_by_id=current_user.id,
+                description='',
+                image_url='',
+                image_src='',
             )
             db.session.add(person)
             db.session.flush()
@@ -123,7 +135,7 @@ def submit_quote():
                 db.session.flush()
 
         # process tags: find existing or create new ones
-        # TODO: replace with more robust logic to create in review stop not submit
+        # TODO: replace with more robust logic to create in review step not submit
         tag_names = [t.strip() for t in tags_raw.split(',') if t.strip()]
         tags = []
         for name in tag_names:
@@ -146,7 +158,10 @@ def submit_quote():
         quote = Quote(
             text=text,
             context=context,
+            orig_text=orig_text if orig_text else None,
+            orig_lang=orig_lang if orig_lang else None,
             source=source if source else None,
+            secondary_source=secondary_source if secondary_source else None,
             meta_person=meta_person,
             date_said=date_said,
             meta_quote_id=meta_quote.id,
@@ -218,10 +233,22 @@ def search():
             query = query.filter(
                 or_(
                     or_(
-                        QuoteAlias.text.ilike(f'%{q}%'),
-                        QuoteAlias.context.ilike(f'%{q}%'),
+                        or_(
+                            QuoteAlias.text.ilike(f'%{q}%'),
+                            or_(
+                                QuoteAlias.orig_text.ilike(f'%{q}%'),
+                                QuoteAlias.context.ilike(f'%{q}%'),
+                            ),
+                        ),
+                        or_(
+                            or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                            Person.tags.any(Tag.name.ilike(f'%{q}%')),
+                        ),
                     ),
-                    or_(Person.name.ilike(f'%{q}%'), Tag.name.ilike(f'%{q}%')),
+                    or_(
+                        QuoteAlias.source.ilike(f'%{q}%'),
+                        QuoteAlias.secondary_source.ilike(f'%{q}%'),
+                    ),
                 )
             )
         query = query.order_by(QuoteAlias.date_said.desc())
@@ -230,6 +257,8 @@ def search():
         selected_meta_person_id = request.args.get('meta_person')
         selected_tag_ids = request.args.getlist('tags')
         selected_tag_neg_ids = request.args.getlist('tags_neg')
+        selected_person_tag_ids = request.args.getlist('person_tags')
+        selected_person_tag_neg_ids = request.args.getlist('person_tags_neg')
         text_query = request.args.get('text_query', '').strip()
         date_from_str = request.args.get('date_from', '').strip()
         date_to_str = request.args.get('date_to', '').strip()
@@ -263,12 +292,44 @@ def search():
                 )
                 query = query.filter(~QuoteAlias.id.in_(subquery))
 
+        # person tags (AND logic for positive selections)
+        if selected_person_tag_ids:
+            person_tag_ids = list(map(int, selected_person_tag_ids))
+            if person_tag_ids:
+                person_tag_meta_ids = (
+                    db.session
+                    .query(Person.meta_person_id)
+                    .join(Person.tags)
+                    .filter(Tag.id.in_(person_tag_ids))
+                    .group_by(Person.meta_person_id)
+                    .having(func.count(func.distinct(Tag.id)) == len(person_tag_ids))
+                    .subquery()
+                )
+                query = query.filter(QuoteAlias.meta_person_id.in_(person_tag_meta_ids))
+
+        if selected_person_tag_neg_ids:
+            person_tag_neg_ids = list(map(int, selected_person_tag_neg_ids))
+            if person_tag_neg_ids:
+                person_tag_neg_meta_ids = (
+                    db.session
+                    .query(Person.meta_person_id)
+                    .join(Person.tags)
+                    .filter(Tag.id.in_(person_tag_neg_ids))
+                    .subquery()
+                )
+                query = query.filter(
+                    ~QuoteAlias.meta_person_id.in_(person_tag_neg_meta_ids)
+                )
+
         # text query
         if text_query:
             query = query.filter(
                 or_(
                     QuoteAlias.text.ilike(f'%{text_query}%'),
-                    QuoteAlias.context.ilike(f'%{text_query}%'),
+                    or_(
+                        QuoteAlias.orig_text.ilike(f'%{text_query}%'),
+                        QuoteAlias.context.ilike(f'%{text_query}%'),
+                    ),
                 )
             )
 
@@ -316,17 +377,28 @@ def search():
         html = render_template('quote_boxes_ajax.html', quotes=quotes)
         return {'html': html, 'has_next': paginated.has_next}
 
-    # -------- prepare tags for rendering in order --------
+    # -------- prepare tags and person tags for rendering in order --------
     selected_tags = []
+    selected_person_tags = []
     if mode == 'advanced':
         ordered_tag_ids = selected_tag_ids + selected_tag_neg_ids
+        ordered_person_tag_ids = selected_person_tag_ids + selected_person_tag_neg_ids
         tags_dict = {str(tag.id): tag for tag in tags}
+
         for tid in ordered_tag_ids:
             if tid in tags_dict:
                 selected_tags.append({
                     'id': tags_dict[tid].id,
                     'name': tags_dict[tid].name,
                     'negative': tid in selected_tag_neg_ids,
+                })
+
+        for tid in ordered_person_tag_ids:
+            if tid in tags_dict:
+                selected_person_tags.append({
+                    'id': tags_dict[tid].id,
+                    'name': tags_dict[tid].name,
+                    'negative': tid in selected_person_tag_neg_ids,
                 })
 
     return render_template(
@@ -338,6 +410,11 @@ def search():
         selected_meta_person_id=request.args.get('meta_person'),
         selected_tag_ids=selected_tag_ids if mode == 'advanced' else [],
         selected_tag_neg_ids=selected_tag_neg_ids if mode == 'advanced' else [],
+        selected_person_tag_ids=selected_person_tag_ids if mode == 'advanced' else [],
+        selected_person_tag_neg_ids=selected_person_tag_neg_ids
+        if mode == 'advanced'
+        else [],
+        selected_person_tags=selected_person_tags,
         text_query=request.args.get('text_query', '')
         if mode == 'advanced'
         else request.args.get('q', ''),
@@ -436,6 +513,9 @@ def edit_quote(hash_id):
         'person': quote.meta_person.get_latest(status=ReviewStatus.APPROVED).name
         if quote.meta_person
         else '',
+        'secondary_source': quote.secondary_source,
+        'orig_text': quote.orig_text,
+        'orig_lang': quote.orig_lang,
         'tags': ','.join(tag.name for tag in quote.tags),
         'date_said': quote.date_said.strftime('%Y-%m-%d') if quote.date_said else '',
     }

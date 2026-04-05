@@ -10,6 +10,7 @@ from app.models import (
     RelatedMetaQuote,
     ReviewStatus,
     Tag,
+    TagCategory,
     db,
 )
 
@@ -68,6 +69,7 @@ def review_person(id):
             person.description = request.form.get('description', '').strip()
             person.image_url = request.form.get('image_url', '').strip()
             person.image_src = request.form.get('image_src', '').strip()
+            person.image_copyright = request.form.get('image_copyright', '').strip()
             person.status = ReviewStatus.APPROVED
 
         person.reviewed_by = current_user
@@ -97,6 +99,7 @@ def review_quote(id):
             quote.text = request.form.get('text', '').strip()
             quote.context = request.form.get('context', '').strip()
             quote.source = request.form.get('source', '').strip()
+            quote.secondary_source = request.form.get('secondary_source', '').strip()
             date_said = request.form.get('date_said', '').strip()
             if date_said:
                 try:
@@ -164,3 +167,24 @@ def delete_quote_request(id):
     db.session.commit()
     flash('QuoteRequest wurde gelöscht.', 'success')
     return redirect(url_for('review.index'))
+
+
+@review_bp.route('/tags', methods=['GET', 'POST'])
+def review_tags():
+    tags = Tag.query.all()
+
+    if request.method == 'POST':
+        for tag in tags:
+            new_category = request.form.get(f'category_{tag.id}', '').strip()
+
+            if new_category not in TagCategory._value2member_map_:
+                continue
+
+            # TODO: add enum value to category field of tag
+            tag.category = TagCategory(new_category)
+            db.session.commit()
+
+        flash('Kategorien wurden aktualisiert.', 'success')
+        return redirect(url_for('review.review_tags'))
+
+    return render_template('tag_review.html', tags=tags, categories=TagCategory)

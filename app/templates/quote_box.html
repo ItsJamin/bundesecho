@@ -55,12 +55,20 @@
         src="{{ person.image_url if person.image_url else url_for('static', filename='img/person-placeholder.svg') }}"
         alt="{{ person.name }}"
         class="quote-person-image me-2"
+        onerror="this.style.display='none'"
       >
       <div class="person-info">
         <a class="quote-person" href="{{ url_for('person.person_detail', hash_id=person_hashs.encode(person.meta_person_id)) }}" {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ person.name }}</a>
         <br>
         {% if person.description %}
           <span class="quote-context">({{ person.description }})</span>
+        {% endif %}
+        {%if person.tags %}
+        {% for tag in person.tags %}
+          {% if tag in quote.tags %}
+            <a href="{{ url_for('quote.search', mode='advanced', person_tags=[tag.id])}}" class="quote-tag person-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+          {% endif %}
+        {% endfor %}
         {% endif %}
       </div>
     {% endif %}
@@ -73,12 +81,22 @@
           {{ quote.source }}
         {% endif %}
       </div>
+    {% elif quote.secondary_source %}
+      <div class="quote-source">
+        {% if quote.secondary_source.startswith("http") %}
+          <a href="{{ quote.secondary_source }}" target="_blank" rel="noopener noreferrer">{{ quote.secondary_source }}</a>
+        {% else %}
+          {{ quote.secondary_source }}
+        {% endif %}
+      </div>
     {% endif %}
 
   {% if quote.tags %}
     <div class="quote-tags">
       {% for tag in quote.tags %}
-        <a href="{{ url_for('quote.search', mode='advanced', tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+        {% if tag not in person.tags %}
+          <a href="{{ url_for('quote.search', mode='advanced', tags=[tag.id])}}" class="quote-tag"  {% if embed_mode %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tag.name }}</a>
+        {% endif %}
       {% endfor %}
     </div>
   {% endif %}

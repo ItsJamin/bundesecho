@@ -12,7 +12,7 @@
       <input type="text" id="simple-query" name="q" class="form-control" 
              placeholder="Suche nach Aussagen, Personen oder Themen" 
              value="{{ text_query or '' }}"
-             autocomplete="off">
+             autocomplete="off" autofocus>
     </div>
 
     <!-- Button row -->
@@ -31,7 +31,22 @@
     <div class="form-group">
       <label for="text-query">Text</label>
       <input type="text" id="text-query" name="text_query" class="form-control" autocomplete="off"
-             placeholder="Wort oder Satzteil im Zitat" value="{{ text_query or '' }}">
+             placeholder="Wort oder Satzteil im Zitat" value="{{ text_query or '' }}" autofocus>
+    </div>
+
+    <!-- Tags -->
+    <div class="form-group">
+      <label for="tag-input">Tags</label>
+      <input type="text" id="tag-input" autocomplete="off" placeholder="Themen" class="form-control">
+      <ul id="tag-suggestions" class="suggestions-list"></ul>
+      <div id="selected-tags" class="selected-tags">
+        {% for tag in selected_tags %}
+          <div class="selected-tag{% if tag.negative %} selected-tag-negative{% endif %}" 
+               data-id="{{ tag.id }}" data-negative="{{ 'true' if tag.negative else 'false' }}">
+            {{ tag.name }} <span class="remove-tag">×</span>
+          </div>
+        {% endfor %}
+      </div>
     </div>
 
     <!-- Person -->
@@ -43,13 +58,13 @@
       <input type="hidden" name="meta_person" id="person-id" value="{{ selected_meta_person_id or '' }}">
     </div>
 
-    <!-- Tags -->
+    <!-- Person Tags -->
     <div class="form-group">
-      <label for="tag-input">Tags</label>
-      <input type="text" id="tag-input" autocomplete="off" placeholder="Themen" class="form-control">
-      <ul id="tag-suggestions" class="suggestions-list"></ul>
-      <div id="selected-tags" class="selected-tags">
-        {% for tag in selected_tags %}
+      <label for="person-tag-input">Personen-Tags</label>
+      <input type="text" id="person-tag-input" autocomplete="off" placeholder="z.B. Partei oder Region der Personen" class="form-control">
+      <ul id="person-tag-suggestions" class="suggestions-list"></ul>
+      <div id="selected-person-tags" class="selected-tags">
+        {% for tag in selected_person_tags %}
           <div class="selected-tag{% if tag.negative %} selected-tag-negative{% endif %}" 
                data-id="{{ tag.id }}" data-negative="{{ 'true' if tag.negative else 'false' }}">
             {{ tag.name }} <span class="remove-tag">×</span>

@@ -35,20 +35,48 @@
   <br><br>
 
   <label for="image_src">
-    Bildquelle / Copyright
+    Bildquelle
     <i class="bi bi-info-circle-fill ms-1"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
-          title="Quelle des Bildes bzw. Copyright-Angabe, z.B. 'Wikimedia Commons, Foto von Max Mustermann' oder 'Bundestagsseite'.">
+          title="Quelle des Bildes, z.B. ein Link zur Seite, von der das Bild stammt.">
     </i>
   </label><br>
   <input type="text" name="image_src" class="form-control" 
         value="{{ person.image_src or '' }}" autocomplete="off">
   <br><br>
 
+  <label for="image_copyright">
+    Copyright Hinweis
+    <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Copyright-Angabe, z.B. 'Wikimedia Commons, Foto von Max Mustermann' oder 'Bundestagsseite'.">
+    </i>
+  </label><br>
+  <input type="text" name="image_copyright" class="form-control" 
+        value="{{ person.image_copyright or '' }}" autocomplete="off">
+  <br><br>
+
+  <div class="form-group">
+      <label for="tags-input">
+        Tags
+        <i class="bi bi-info-circle-fill ms-1"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Tag mit Enter hinzufügen oder aus Liste auswählen.">
+        </i>
+      </label>
+      <input type="text" id="tags-input" class="form-control" placeholder="" autocomplete="off">
+      <ul id="tag-suggestions" class="suggestions-list"></ul>
+      <div id="selected-tags" class="selected-tags"></div>
+      <input type="hidden" name="tags" id="tags-hidden" value="{{ form_data.tags if form_data.tags else '' }}">
+  </div>
+
 
   <button class="btn btn-outline-light mt-2 btn-bg" type="submit">Einreichen</button>
 </form>
 <script src="{{ url_for('static', filename='js/tooltip.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tag-autocomplete.js') }}"></script>
 
 {% endblock %}

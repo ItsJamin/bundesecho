@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from hashids import Hashids
+from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import func
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -21,6 +22,12 @@ class ReviewStatus(enum.Enum):
     REJECTED = 'REJECTED'
 
 
+class TagCategory(enum.Enum):
+    PARTY = 'PARTY'  # e.g. CDU, SPD, AfD
+    REGION = 'REGION'  # e.g. International, Germany, Bavaria
+    ORGANIZATION = 'ORGANIZATION'  # e.g. UN, NATO, WHO
+
+
 # Main Info Models
 
 quote_tag = db.Table(
@@ -35,6 +42,23 @@ quote_tag = db.Table(
         'tag_id',
         db.Integer,
         db.ForeignKey('tag.id', name='fk_quote_tag_tag_id'),
+        primary_key=True,
+    ),
+    db.Column('order', db.Integer, default=0),
+)
+
+person_tag = db.Table(
+    'person_tag',
+    db.Column(
+        'person_id',
+        db.Integer,
+        db.ForeignKey('person.id', name='fk_person_tag_person_id'),
+        primary_key=True,
+    ),
+    db.Column(
+        'tag_id',
+        db.Integer,
+        db.ForeignKey('tag.id', name='fk_person_tag_tag_id'),
         primary_key=True,
     ),
     db.Column('order', db.Integer, default=0),
@@ -60,6 +84,7 @@ class Person(db.Model):
     description = db.Column(db.Text, nullable=True)
     image_url = db.Column(db.String(300), nullable=True)
     image_src = db.Column(db.String(300), nullable=True)
+    image_copyright = db.Column(db.String(300), nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     meta_person_id = db.Column(
         db.Integer, db.ForeignKey('meta_person.id'), nullable=False
@@ -69,6 +94,13 @@ class Person(db.Model):
     submitted_by = db.relationship('User', foreign_keys=[submitted_by_id])
     reviewed_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reviewed_by = db.relationship('User', foreign_keys=[reviewed_by_id])
+
+    tags = db.relationship(
+        'Tag',
+        secondary=person_tag,
+        backref=db.backref('persons', lazy='dynamic'),
+        order_by=person_tag.c.order,
+    )
 
 
 class MetaQuote(db.Model):
@@ -87,9 +119,12 @@ class Quote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     context = db.Column(db.Text, nullable=True)
-    source = db.Column(db.String(255))
+    source = db.Column(db.String(255), nullable=True)
+    secondary_source = db.Column(db.String(255), nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_said = db.Column(db.DateTime, nullable=True)
+    orig_text = db.Column(db.Text, nullable=True)
+    orig_lang = db.Column(db.String(2), nullable=True)
 
     meta_person_id = db.Column(
         db.Integer, db.ForeignKey('meta_person.id'), nullable=False
@@ -115,10 +150,20 @@ class Quote(db.Model):
     reviewed_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reviewed_by = db.relationship('User', foreign_keys=[reviewed_by_id])
 
+    __table_args__ = (
+        CheckConstraint(
+            '(source IS NOT NULL) OR (secondary_source IS NOT NULL)',
+            name='ck_source_or_secondary_required',
+        ),
+    )
+
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
+    category = db.Column(db.Enum(TagCategory), nullable=True)
+    custom_info = db.Column(db.Text, nullable=True)
+    # e.g. color of a party, flag of a country
 
 
 # User Models

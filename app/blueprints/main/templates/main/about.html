@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}BundesEcho - Neuigkeiten{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center mb-4">Neuigkeiten</h1>
+
+{% for news in news_list %}
+    <div class="card mb-3 quote-box">
+        <div class="card-body">
+            <h5 class="card-title">{{ news.title }}</h5>
+            {{ news.content|safe }}
+            <small class="text-muted">{{ news.date }}</small>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

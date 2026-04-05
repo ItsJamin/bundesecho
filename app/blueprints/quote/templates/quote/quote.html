@@ -1,14 +1,40 @@
 {% extends 'base.html' %}
-{% block title %}Aussage von {{ person.name }} - BundesEcho{% endblock %}
+{% block title %}Zitate von {{ person.name }} mit Quelle und Kontext - BundesEcho{% endblock %}
 {% block content %}
 
 <div class="no-link">
 {% include "quote_box.html" %}
 </div>
 
+{%if quote.orig_text and quote.orig_lang%}
+<h4>Originaltext</h4>
+<p>Diese Zitat ist aus einer anderen Sprache ({{ quote.orig_lang }}) übersetzt: 
+  <p class="quote-box">“{{ quote.orig_text }}”</p></p>
+
+{% endif %}
+
+{% if quote.secondary_source and quote.source %}
+
+<h4>Sekundäre Quelle</h4>
+<div class="quote-source">
+  {% if quote.secondary_source.startswith("http") %}
+    <a href="{{ quote.secondary_source }}" target="_blank" rel="noopener noreferrer">{{ quote.secondary_source }}</a>
+  {% else %}
+    {{ quote.secondary_source }}
+  {% endif %}
+</div>
+
+<br>
+
+{% endif %}
+
+<h4>Person</h4>
+
+{% include("person_box.html") %}
+
 <br>
 {% if related_quotes %}
-  <h2>Dazugehörige Zitate</h2>
+  <h4>Dazugehörige Zitate</h4>
   <div>
     {% for quote in related_quotes %}
       <div class="p-4 pb-0 pt-0">
@@ -20,10 +46,13 @@
 {% endif %}
 
 <br>
-<h2>Dazugehöriges Zitat vorschlagen</h2>
+<h4>Dazugehöriges Zitat vorschlagen <i class="bi bi-info-circle-fill ms-1"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Dazugehörige Zitate werden bei einem Zitat mitangezeigt. Dazugehörige Zitate können z.B. Reaktionen auf die Aussage sein oder andere Aussagen, die im gleichen Gespräch getroffen worden sind. Schlage ein Zitat vor indem du den Link zu dem Zitat hier einfügst.">
+</i></h4>
 <form id="relatedForm" method="post" action="{{ url_for('quote.suggest_related', hash_id=quote_hashs.encode(quote.meta_quote_id)) }}">
   <div class="mb-3">
-    <label for="relatedLink" class="form-label">Dazugehörige Zitate werden bei einem Zitat mitangezeigt. Dazugehörige Zitate können z.B. Reaktionen auf die Aussage sein oder andere Aussagen, die im gleichen Gespräch getroffen worden sind. Schlage ein Zitat vor indem du den Link zu dem Zitat hier einfügst.</label>
     <input type="url" class="form-control" id="relatedLink" name="related_link" required placeholder="https://bundesecho.de/q/view/a1B2c3" autocomplete="off">
   </div>
   <button type="submit" class="btn btn-outline-light mt-2 btn-bg mb-4">Vorschlagen</button>

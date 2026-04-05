@@ -513,6 +513,9 @@ def edit_quote(hash_id):
         'person': quote.meta_person.get_latest(status=ReviewStatus.APPROVED).name
         if quote.meta_person
         else '',
+        'secondary_source': quote.secondary_source,
+        'orig_text': quote.orig_text,
+        'orig_lang': quote.orig_lang,
         'tags': ','.join(tag.name for tag in quote.tags),
         'date_said': quote.date_said.strftime('%Y-%m-%d') if quote.date_said else '',
     }

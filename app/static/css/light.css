@@ -102,6 +102,10 @@ a:hover {
     color: #1a1a1a;
 }
 
+.quote-tag.person-tag {
+    background-color: #95a2b6;
+}
+
 .quote-date {
     color: #6c757d;
 }

@@ -66,7 +66,7 @@
       {% if quotes %}
       <a href="{{ url_for('quote.quote_detail', hash_id=quote_hashs.encode(quotes[0].meta_quote_id)) }}" class="btn btn-outline-light btn-bg w-100">Beispielzitat im Detail sehen</a>
       {% else %}
-      <a href="{{ url_for('quote.search') }}" class="btn btn-outline-light btn-bg w-100">Beispielzitat im Detail sehen</a>
+      <a href="{{ url_for('quote.search') }}" class="btn btn-outline-light btn-bg w-100">Zur Zitat-Suche</a>
       {% endif %}
     </div>
 

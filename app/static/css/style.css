@@ -462,6 +462,9 @@ margin-bottom: 0.25rem;
   cursor: pointer;
 }
 
+.suggestions-list li.active-suggestion{
+  background-color: #415a77;
+}
 .suggestions-list li:hover {
   background-color: #415a77;
 }

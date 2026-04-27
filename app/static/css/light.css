@@ -202,6 +202,10 @@ a:hover {
     color: #1a1a1a;
 }
 
+.suggestions-list li.active-suggestion{
+  background-color: #e9ecef;
+}
+
 .suggestions-list li:hover {
     background-color: #e9ecef;
 }

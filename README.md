@@ -34,6 +34,33 @@ quotes but also to persons.
 This project makes it easy to share projects: a short URL, copy-to-clipboard and even generating
 images from the quotes can help improve to spread sources and awareness in political discussions.
 
+# Contributing
+
+Have a look at [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Setup
+
+Install Python, git and then execute the following commands:
+
+```bash
+git clone https://github.com/ItsJamin/bundesecho
+cd bundesecho
+
+# 1. Create & activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. (Optional) Seed with example data
+cp instance/example/quotes.db instance/quotes.db
+
+# 4. Run the dev server
+python run.py
+```
+
+
 # Versions
 
 ## 1.3.0 - PersonTagging, MultiLanguage and SecondarySources

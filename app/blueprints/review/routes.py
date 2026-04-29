@@ -72,7 +72,25 @@ def review_person(id):
             person.image_copyright = request.form.get('image_copyright', '').strip()
             person.status = ReviewStatus.APPROVED
 
-        person.reviewed_by = current_user
+            person.reviewed_by = current_user
+
+            db.session.commit()
+
+            tags_raw = request.form.get('tags', '').strip()
+            tag_names = [t.strip() for t in tags_raw.split(',') if t.strip()]
+
+            tags = []
+            for name in tag_names:
+                tag = Tag.query.filter_by(name=name).first()
+                if not tag:
+                    tag = Tag(name=name)
+                    db.session.add(tag)
+                    db.session.flush()
+                tags.append(tag)
+
+            person.tags = tags
+
+            person.status = ReviewStatus.APPROVED
 
         db.session.commit()
         return redirect(url_for('review.index'))

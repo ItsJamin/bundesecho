@@ -21,7 +21,6 @@ User-agent: *
 Disallow: /api/
 Disallow: /review/
 Disallow: /admin/
-Disallow: /ajmin/
 Disallow: /secret-info
 Disallow: /login
 Disallow: /logout

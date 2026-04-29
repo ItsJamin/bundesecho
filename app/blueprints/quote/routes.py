@@ -508,14 +508,14 @@ def edit_quote(hash_id):
 
     form_data = {
         'text': quote.text,
-        'context': quote.context,
+        'context': quote.context if quote.context else '',
         'source': quote.source,
         'person': quote.meta_person.get_latest(status=ReviewStatus.APPROVED).name
         if quote.meta_person
         else '',
-        'secondary_source': quote.secondary_source,
-        'orig_text': quote.orig_text,
-        'orig_lang': quote.orig_lang,
+        'secondary_source': quote.secondary_source if quote.secondary_source else '',
+        'orig_text': quote.orig_text if quote.orig_text else '',
+        'orig_lang': quote.orig_lang if quote.orig_lang else '',
         'tags': ','.join(tag.name for tag in quote.tags),
         'date_said': quote.date_said.strftime('%Y-%m-%d') if quote.date_said else '',
     }

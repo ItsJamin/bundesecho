@@ -5,7 +5,7 @@ You can find the website [here](https://www.bundesecho.de).
 
 The aim of this project is to:
 - hold public figures accountable for what they say
-- give people the opportunity to inform themself about the  opinions in the political landscape
+- give people the opportunity to inform themself about the opinions in the political landscape
 - provide sources and context to quotes to prevent misinformation and misrepresentation
 
 # Features
@@ -59,7 +59,7 @@ also be referenced in the creation of Quotes.
 # Other
 
 ## You Are Allowed To:
-- Use the project for free
+- Use the project for non-commercial purposes
 - Use it privately or publicly
 - Modify it for your own needs
 - Share it with others
@@ -68,12 +68,10 @@ also be referenced in the creation of Quotes.
 - Create non-commercial forks
 
 ## You Are NOT Allowed To:
-- Make money from it  
-  (no commercial SaaS, no selling, no monetization)
+- Make a commercial product based on it without permission
 - Use it to promote misinformation, discrimination, manipulation, or illegal activities
 - Remove attribution
 - Remove or change the license
-- Make a commercial product based on it without permission
 
 ## Contributors
 Contributors keep their copyright but allow the project owner to use

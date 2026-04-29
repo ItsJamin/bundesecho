@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
@@ -25,24 +25,37 @@ person_bp = Blueprint(
 def list_persons():
     # load all MetaPersons with their most recent approved Person snapshot
     meta_persons = MetaPerson.query.options(joinedload(MetaPerson.persons)).all()
-
     persons = []
+    tag_counts = Counter()
+
     for meta in meta_persons:
         current_person = meta.get_latest()
         if current_person:
             persons.append(current_person)
+            # collect tags for the tag filter
+            for tag in current_person.tags:
+                tag_counts[tag.name] += 1
 
+    # group persons by last name letter
     grouped = defaultdict(list)
     for person in persons:
         names = person.name.split()
-        first_letter = names[-1][0].upper()
+        last_name = names[-1] if names else ""
+        first_letter = last_name[0].upper() if last_name else "#"
         grouped[first_letter].append(person)
 
     for letter in grouped:
         grouped[letter].sort(key=lambda p: p.name.split()[-1])
-    grouped = dict(sorted(grouped.items()))
-    return render_template('list.html', grouped_persons=grouped)
 
+    grouped = dict(sorted(grouped.items()))
+
+    sorted_tags = sorted(tag_counts.items(), key=lambda item: item[1], reverse=True)
+
+    return render_template(
+        'list.html',
+        grouped_persons=grouped,
+        sorted_tags=sorted_tags
+    )
 
 @person_bp.route('/view/<hash_id>')
 def person_detail(hash_id):

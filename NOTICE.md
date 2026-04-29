@@ -9,7 +9,6 @@ Any public, non-commercial deployment or redistribution must include:
 - The project name: **BundesEcho**
 - A link to the original repository
 - A statement acknowledging the original author
-- A clear description of modifications (if applicable)
 
 Example:
 > Based on BundesEcho by <Author>, used under the BundesEcho Source-Available License.

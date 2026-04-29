@@ -102,6 +102,10 @@ a:hover {
     color: #1a1a1a;
 }
 
+.quote-tag.person-tag {
+    background-color: #95a2b6;
+}
+
 .quote-date {
     color: #6c757d;
 }
@@ -196,6 +200,10 @@ a:hover {
     background-color: #ffffff;
     border: 1px solid #cccccc;
     color: #1a1a1a;
+}
+
+.suggestions-list li.active-suggestion{
+  background-color: #e9ecef;
 }
 
 .suggestions-list li:hover {

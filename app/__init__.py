@@ -1,6 +1,5 @@
 import os
 import uuid
-
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
@@ -35,7 +34,7 @@ def create_app(config_name='development'):
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SECURE=True,
         SESSION_COOKIE_SAMESITE='Lax',
-        PERMANENT_SESSION_LIFETIME=timedelta(days=1),
+        PERMANENT_SESSION_LIFETIME=timedelta(days=7),
         REMEMBER_COOKIE_HTTPONLY=True,
         REMEMBER_COOKIE_SECURE=True,
         REMEMBER_COOKIE_SAMESITE='Strict',

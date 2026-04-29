@@ -10,7 +10,7 @@ from app.stats_models import VisitStat
 
 
 admin_bp = Blueprint(
-    'admin', __name__, url_prefix='/ajmin', template_folder='templates/admin/'
+    'admin', __name__, url_prefix='/admin', template_folder='templates/admin/'
 )
 
 
@@ -95,7 +95,8 @@ def stats():
         db.session
         .query(VisitStat.path, db.func.sum(VisitStat.count).label('total_clicks'))
         .filter(
-            db.or_(VisitStat.path.like('/p/view/%'), VisitStat.path.like('/q/view/%'))
+            db.or_(VisitStat.path.like('/p/view/%'), VisitStat.path.like('/q/view/%')),
+            VisitStat.date == today
         )
         .group_by(VisitStat.path)
         .order_by(db.func.sum(VisitStat.count).desc())

@@ -504,6 +504,9 @@ margin-bottom: 0.25rem;
   color: #ff5555;
 }
 
+.tag-active {
+    border: white 1px solid;
+}
 
 .form-group {
   position: relative;

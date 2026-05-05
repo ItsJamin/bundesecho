@@ -3,7 +3,6 @@
 {% block content %}
 <div class="person-list">
   <h1>Politische Akteur:innen</h1>
-
     <!-- Search Bar -->
   <form id="search-form" novalidate>
     <div class="form-group">
@@ -13,17 +12,31 @@
   </form>
 
   {% if sorted_tags %}
-  <div class="tag-cloud mt-4">
-    <p class="text-muted mb-2" style="font-size: 0.9rem;">Häufige Schlagworte:</p>
-    <div class="d-flex flex-wrap gap-2">
-      {% for tag_name, count in sorted_tags %}
-        <button class="selected-tag btn btn-sm btn-bg" data-tag="{{ tag_name }}">
-          {{ tag_name }} <span class="opacity-50">{{ count }}</span>
-        </button>
-      {% endfor %}
-    </div>
-    <div id="clear-tag" class="btn btn-bg btn-outline-light mt-3">
-        Filter zurücksetzen
+  <div class="mt-4">
+    <button class="btn btn-bg btn-outline-light w-100 d-flex justify-content-between align-items-center" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#tagFilterCollapse" 
+            aria-expanded="false" 
+            aria-controls="tagFilterCollapse">
+      <span><i class="bi bi-tags me-2"></i>Tag-Filter</span>
+      <i class="bi bi-chevron-down"></i>
+    </button>
+
+    <div class="collapse" id="tagFilterCollapse">
+      <div class="card card-body bg-transparent border-0 p-3 tag-cloud">
+        <p class="text-muted mb-2" style="font-size: 0.9rem;">Häufige Tags:</p>
+        <div class="d-flex flex-wrap gap-2">
+          {% for tag_name, count in sorted_tags %}
+            <button class="selected-tag btn btn-sm btn-bg" data-tag="{{ tag_name }}">
+              {{ tag_name }} <span class="opacity-50">{{ count }}</span>
+            </button>
+          {% endfor %}
+        </div>
+        <div id="clear-tag" class="btn btn-bg btn-outline-light mt-3" style="width: fit-content;">
+            Filter zurücksetzen
+        </div>
+      </div>
     </div>
   </div>
   {% endif %}
@@ -55,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const groups = document.querySelectorAll(".person-group");
   const tagButtons = document.querySelectorAll(".selected-tag");
   const clearTagBtn = document.getElementById("clear-tag");
-
   let activeTag = null;
 
   function filter() {
@@ -64,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
     groups.forEach(group => {
       const persons = group.querySelectorAll(".person-box");
       let anyVisible = false;
-
       persons.forEach(box => {
         const name = box.dataset.name || "";
         const description = box.dataset.description || "";
@@ -78,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
         box.style.display = isVisible ? "" : "none";
         if (isVisible) anyVisible = true;
       });
-
       group.style.display = anyVisible ? "" : "none";
     });
   }

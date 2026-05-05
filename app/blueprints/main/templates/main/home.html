@@ -1,96 +1,78 @@
 {% extends "base.html" %}
-
 {% block title %}Zitate politischer Akteur:innen – dokumentiert & überprüfbar{% endblock %}
-
 {% block content %}
 <div class="landing-page container my-5">
-
   <h1 class="text-center mb-4">Dokumentierte Zitate politischer Akteur:innen</h1>
-  <p class="lead text-center mb-5">
-    <span id="quote-counter" clas="lead text-center">0</span>+ <br>
-    Öffentliche Aussagen politischer Akteur:innen – im Original, mit Quelle und Kontext. Klar dokumentiert. Schnell auffindbar.
-  </p>
 
   <form method="GET" action="{{ url_for('quote.search') }}" id="simple-search-form" novalidate>
     <input type="hidden" name="mode" value="simple">
-
     <div class="row g-2">  
         <div class="col-12 col-md-9">
             <input type="text" id="simple-query" name="q" class="form-control"
                    placeholder="Suche nach Aussagen, Personen oder Themen"
                    value="{{ text_query or '' }}" autocomplete="off">
         </div>
-
         <div class="col-12 col-md-3 d-grid">
             <button type="submit" class="btn btn-bg btn-outline-light">
                 Suchen
             </button>
         </div>
     </div>
-
-    <p class="text-muted p-2">oder reiche
-      <a class="text-muted" href="{{ url_for('quote.submit_request') }}">hier</a> eine Aussage ein.</p>
 </form>
 
-<br>
+  <p class="lead text-center mb-5 mt-4">
+    <span id="quote-counter" clas="lead text-center">0</span>+ <br>
+    Öffentliche Aussagen politischer Akteur:innen – im Original, mit Quelle und Kontext. Klar dokumentiert. Schnell auffindbar.
+  </p>
 
-  <h2 class="mb-5">Zitat des Tages</h2>
-  
+<div class="row g-3 mt-4 mb-5 text-center">
+  <div class="col-4">
+    <a href="{{ url_for('quote.search') }}" class="btn btn-outline-light btn-bg w-100 py-3">
+      <i class="bi bi-search d-block fs-3 mb-1"></i>
+      <small>Zitate durchstöbern</small>
+    </a>
+  </div>
+  <div class="col-4">
+    <a href="{{ url_for('person.list_persons') }}" class="btn btn-outline-light btn-bg w-100 py-3">
+      <i class="bi bi-person d-block fs-3 mb-1"></i>
+      <small>Personen durchsuchen</small>
+    </a>
+  </div>
+  <div class="col-4">
+    <a href="{{ url_for('quote.submit_request') }}" class="btn btn-outline-light btn-bg w-100 py-3">
+      <i class="bi bi-plus-circle d-block fs-3 mb-1"></i>
+      <small>Zitat einreichen</small>
+    </a>
+  </div>
+</div>
 
+  <h2 class="mt-5">Zitat des Tages</h2> 
   <div id="quote-container" class="quote-examples mt-3">
     {% for quote in quotes %}
       {% include "quote_box.html" %}
     {% endfor %}
   </div>
-
   <div class="mb-4 text-center Hide" style="display: none;">
     <button id="refresh-quote-btn" class="btn btn-outline-light btn-bg mb-4">
       Zufälliges Zitat anzeigen
     </button>
   </div>
-  <h2 class="mt-5">Funktionen</h2>
-  <div class="row gy-4 mt-3">
-
-    <div class="col-md-3">
-      <p><strong>Zitate finden:</strong> Durchsuche die Sammlung an Zitaten nach Personen, Themen oder Zeiträumen.</p>
-      <a href="{{ url_for('quote.search') }}" class="btn btn-outline-light btn-bg w-100">Zur Zitat-Suche</a>
-    </div>
-
-    <div class="col-md-3">
-      <p><strong>Politische Akteur:innen im Überblick:</strong> Finde alle dokumentierten Personen und ihre Zitate.</p>
-      <a href="{{ url_for('person.list_persons') }}" class="btn btn-outline-light btn-bg w-100">Personen anzeigen</a>
-    </div>
-
-    <div class="col-md-3">
-      <p><strong>Klicke auf ein Zitat für mehr Details:</strong> Klicke auf das Auge unten rechts, um noch mehr Infos zu bekommen.</p>
-      <a href="{{ url_for('quote.quote_detail', hash_id=quote_hashs.encode(quotes[0].meta_quote_id)) }}" class="btn btn-outline-light btn-bg w-100">Beispielzitat im Detail sehen</a>
-    </div>
-
-    <div class="col-md-3">
-      <p><strong>Eigenes Zitat einreichen:</strong> Du hast ein relevantes Zitat entdeckt? Trage gern zur Sammlung bei indem du es einreichst.</p>
-      <a href="{{ url_for('quote.submit_request') }}" class="btn btn-outline-light btn-bg w-100">Zitat einreichen</a>
-    </div>
-
-  </div>
 
   <h2 class="mt-5">Wozu?</h2>
   <ul>
     <li><strong>Verantwortung sichtbar machen:</strong> Wer öffentlich spricht, steht dafür ein. Diese Plattform macht Aussagen dauerhaft zugänglich und überprüfbar.</li>
-    <li><strong>Einordnung ermöglichen:</strong> Wer hat was gesagt – und wann? Originalzitate helfen bei der Orientierung im politischen Diskurs.</li>
-    <li><strong>Kontext statt Verkürzung:</strong> Kein Framing, keine Zuspitzung – dokumentiert wird, was gesagt wurde. Möglichst neutral, mit Quellenangabe und Einordnung.</li>
+    <li><strong>Einordnung ermöglichen:</strong> Wer hat was gesagt und wann? Originalzitate helfen bei der Orientierung im politischen Diskurs.</li>
+    <li><strong>Kontext statt Verkürzung:</strong> Kein Framing, keine Zuspitzung – dokumentiert wird, was gesagt wurde. Mit Quellenangabe und möglichst neutraler Einordnung.</li>
   </ul>
-
   <h2 class="mt-5">Über die Daten</h2>
-
   <p class="text">
-    Die täglich wachsende Datenbank umfasst derzeit über <span class="fw-bold">{{ quote_count }}</span> dokumentierte Aussagen von mehr als <span class="fw-bold">{{ person_count }}</span> politischen Akteur:innen. Erfasst werden ausschließlich öffentliche Zitate – mit Angabe von Quelle, Veröffentlichungszeitpunkt und zusätzlichem Kontext.
+    Die täglich wachsende Datenbank umfasst derzeit über <span class="fw-bold">{{ quote_count }}</span> dokumentierte Aussagen von mehr als <span class="fw-bold">{{ person_count }}</span> politischen Akteur:innen. Erfasst werden ausschließlich öffentliche Zitate mit Angabe von Quelle, Veröffentlichungszeitpunkt und zusätzlichem Kontext.
     <br><br>
     Um eine wirkliche Fairness jeder Position zu ermöglichen, kann jeder Zitate einreichen. Nachdem die Korrektheit und Quelle überprüft worden ist, wird das Zitat mitaufgenommen.
     <br><br>
     Diese Datenbank fokussiert sich auf Aussagen aus der deutschen Politik. Das beinhaltet deutsche politische Entscheidungsträger, Parteien und Debattenteilnehmer aus Medien.
     Zitate von internationalen Akteur:innen werden zwar auch aufgenommen, aber haben optimalerweise einen Bezug zum deutschen politischen Diskurs.
   </p>
-
 </div>
 
 <script>
@@ -98,26 +80,21 @@ document.addEventListener("DOMContentLoaded", function() {
   const counter = document.getElementById("quote-counter");
   const target = {{ quote_count }};
   const duration = 600; // total duration in ms
-
   let start = null;
-
   function easeOutQuad(t) {
     return t * (2 - t); // ease-out function
   }
-
   function animate(timestamp) {
     if (!start) start = timestamp;
     const progress = (timestamp - start) / duration;
     const easedProgress = easeOutQuad(Math.min(progress, 1));
     counter.textContent = Math.floor(easedProgress * target);
-
     if (progress < 1) {
       requestAnimationFrame(animate);
     } else {
       counter.textContent = target; // ensure final value
     }
   }
-
   requestAnimationFrame(animate);
 });
 document.getElementById("refresh-quote-btn").addEventListener("click", function () {
@@ -126,7 +103,6 @@ document.getElementById("refresh-quote-btn").addEventListener("click", function 
   if (banner) {
     banner.style.display = "none";
   }
-
   fetch("/api/random_quote")
     .then(response => response.json())
     .then(data => {
@@ -137,5 +113,4 @@ document.getElementById("refresh-quote-btn").addEventListener("click", function 
     });
 });
 </script>
-
 {% endblock %}

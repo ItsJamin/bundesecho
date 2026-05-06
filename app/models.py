@@ -1,5 +1,4 @@
 import enum
-
 from datetime import datetime
 
 from flask_login import UserMixin
@@ -156,6 +155,20 @@ class Quote(db.Model):
             name='ck_source_or_secondary_required',
         ),
     )
+
+    def to_dict(self):
+        return {
+            "meta_id": self.meta_quote_id,
+            "text": self.text,
+            "context": self.context,
+            "source": self.source,
+            "secondary_source": self.secondary_source,
+            "date_created": self.date_created.isoformat() if self.date_created else None,
+            "date_said": self.date_said.isoformat() if self.date_said else None,
+            "orig_text": self.orig_text,
+            "orig_lang": self.orig_lang,
+            "person_meta_id": self.meta_person_id
+        }
 
 
 class Tag(db.Model):

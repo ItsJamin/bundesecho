@@ -101,6 +101,12 @@ class Person(db.Model):
         order_by=person_tag.c.order,
     )
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description
+        }
+
 
 class MetaQuote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -158,7 +164,6 @@ class Quote(db.Model):
 
     def to_dict(self):
         return {
-            "meta_id": self.meta_quote_id,
             "text": self.text,
             "context": self.context,
             "source": self.source,
@@ -167,7 +172,6 @@ class Quote(db.Model):
             "date_said": self.date_said.isoformat() if self.date_said else None,
             "orig_text": self.orig_text,
             "orig_lang": self.orig_lang,
-            "person_meta_id": self.meta_person_id
         }
 
 

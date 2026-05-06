@@ -46,5 +46,16 @@ def quote_detail(hash_id):
         return jsonify({"error": "invalid quote"}), 404
 
     quote = meta_quote.get_latest()
+    person = quote.meta_person.get_latest()
 
-    return jsonify(quote.to_dict())
+    common_tags = []
+    for tag in quote.tags:
+        if tag in person.tags:
+            common_tags.append(tag.name)
+
+
+    return jsonify({
+        "quote": quote.to_dict(),
+        "person": person.to_dict(),
+        "tags": common_tags
+        })

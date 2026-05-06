@@ -47,10 +47,8 @@ def create_app(config_name='development'):
     login_manager.login_view = 'auth.login'
 
     from . import models  # noqa: PLC0415
-    from .about_models import InfoNews  # noqa: F401, PLC0415
+    from .about_models import APIToken, InfoNews  # noqa: F401, PLC0415
     from .stats_models import VisitStat  # noqa: PLC0415
-
-    # no need to initialize stats_db separately, as it uses the main db instance with a bind key
 
     with app.app_context():
         db.create_all()  # create tables for all configured binds
@@ -82,6 +80,10 @@ def create_app(config_name='development'):
     from .blueprints.admin import admin_bp  # noqa: PLC0415
 
     app.register_blueprint(admin_bp)
+
+    from .blueprints.api import api_bp
+
+    app.register_blueprint(api_bp)
 
     @app.context_processor
     def inject_hashids():

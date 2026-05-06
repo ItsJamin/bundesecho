@@ -109,8 +109,8 @@ a:hover {
 
 .person-info a {
     color: #e0e0e0;
-    font-weight: bold;
     text-decoration: none;
+    font-siZe: 1.1rem;
 }
 
 .person-info a:hover {
@@ -127,7 +127,7 @@ a:hover {
 /* Quote box styling */
 .quote-box {
     position: relative;
-    background-color: #1b263b; /* Matches navbar */
+    background-color: #1b263b;
     color: #e0e0e0;
     border: 1px solid #2e3b4e;
     border-radius: 8px;
@@ -176,14 +176,12 @@ a:hover {
 .quote-box blockquote {
     margin: 0 0 0.5rem 0;
     /*font-style: italic;*/
-    font-size: 1.1rem;
+    font-size: 1.3rem;
 }
 
 .quote-footer {
     margin-top: 0.5rem;
-    font-size: 0.95rem;
     color: #e0e0e0;
-    line-height: 1.4;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -194,7 +192,7 @@ a:hover {
     align-items: center;
     margin-top: 0.5rem;
     font-size: 0.95rem;
-    color: #e0e0e0;
+    color: #a8b0bb;
     line-height: 1.4;
 }
 
@@ -213,7 +211,8 @@ a:hover {
 .quote-tag {
     display: inline-block;
     background-color: #415a77;
-    color: #e0e0e0;
+    /*color: #e0e0e0;*/
+    color: #a8b0bb;
     font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
@@ -223,7 +222,12 @@ a:hover {
 
 .quote-tag.person-tag {
     background-color: #2e3b4e;
+    color: #a8b0bb;
     font-weight: normal;
+}
+
+.quote-tag.person-tag:hover {
+    color: #fff;
 }
 
 .quote-date {
@@ -234,7 +238,7 @@ a:hover {
 
 .quote-context {
     color: #a8b0bb;
-    font-style: italic;
+    /*font-style: italic;*/
 }
 
 .quote-person-image {
@@ -491,6 +495,14 @@ margin-bottom: 0.25rem;
 .selected-tag-negative {
   background-color: #ad2c43;
   color: #fff;
+}
+
+#selected-person-tags .selected-tag{
+    background-color: #2e3b4e;
+}
+
+#selected-person-tags .selected-tag-negative{
+    background-color: #6e1a29;
 }
 
 .selected-tag .remove-tag {

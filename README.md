@@ -1,3 +1,10 @@
+<div align="center">
+  <img width="200" height="200" alt="person-placeholder" src="https://github.com/user-attachments/assets/30004197-ab0a-45f1-a5ec-47185b4d1c02" />
+</div>
+
+
+
+
 # About [BundesEcho](https://www.bundesecho.de)
 
 BundesEcho is a (now open-source) archive for saving and searching political quotes, with a focus on (but not limited to) german politics.
@@ -57,6 +64,10 @@ Sometimes links stop working. To prevent this, archiving a website is key. The a
 also be referenced in the creation of Quotes.
 
 # Other
+
+## Additional Projects/Repositories
+
+- a browser extension for easily submitting to bundesecho can be found here: https://github.com/ItsJamin/bundesecho-addon
 
 ## You Are Allowed To:
 - Use the project for non-commercial purposes

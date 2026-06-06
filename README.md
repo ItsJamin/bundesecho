@@ -76,16 +76,10 @@ also be referenced in the creation of Quotes.
 - Share it with others
 - Run it as a hosted service, website, or tool
 - Use it inside your organization
-- Create non-commercial forks
 
 ## You Are NOT Allowed To:
-- Make a commercial product based on it without permission
 - Use it to promote misinformation, discrimination, manipulation, or illegal activities
 - Remove attribution
 - Remove or change the license
 
-## Contributors
-Contributors keep their copyright but allow the project owner to use
-contributions commercially in the future.
-
-For the full legal terms, see the `LICENSE.md` file.
+For the full legal terms, see the `LICENSE.md` (GNU General Public License) file.

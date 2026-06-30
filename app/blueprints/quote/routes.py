@@ -1,7 +1,16 @@
 from datetime import datetime
 from operator import and_, or_
 
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
@@ -469,6 +478,46 @@ def quote_detail(hash_id):
     return render_template(
         'quote.html', quote=quote, person=person, related_quotes=related_quotes
     )
+
+
+@quote_bp.route('/rss')
+def rss_quotes():
+    query, QuoteAlias = get_latest_approved_quotes_query()
+
+    latest_quotes = (
+        query.filter(QuoteAlias.status == ReviewStatus.APPROVED)
+        .order_by(QuoteAlias.date_said.desc())
+        .limit(8) # TODO: how much? and maybe env var?
+        .all()
+    )
+
+    rss_items = []
+    for quote in latest_quotes:
+        hash_id = quote_hashs.encode(quote.meta_quote_id)
+        person = quote.meta_person.get_latest()
+        person_name = person.name if person else ""
+
+        rss_items.append(f"""
+            <item>
+                <title>BundesEcho{" " + quote.date_said.strftime('%d.%m.%Y') if quote.date_said else ""}: {person_name}</title>
+                <link>{request.url_root}view/{hash_id}</link>
+                <description>“{quote.text}” {"<br><br>" + quote.context if quote.context else ""}</description>
+                <pubDate>{quote.date_created.strftime('%a, %d %b %Y %H:%M:%S GMT') if quote else ""}</pubDate>
+            </item>
+        """)
+
+    rss_feed = f"""<?xml version="1.0" encoding="UTF-8"?>
+    <rss version="2.0">
+        <channel>
+            <title>BundesEcho - Neueste Aussagen</title>
+            <link>{request.url_root}</link>
+            <description>RSS Feed für Aussagen aus der deutschen Nachrichten- und Politiklandschaft.</description>
+            {''.join(rss_items)}
+        </channel>
+    </rss>
+    """
+
+    return Response(rss_feed, mimetype='application/rss+xml')
 
 
 @quote_bp.route('/embed/<hash_id>')
